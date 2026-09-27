@@ -169,6 +169,17 @@
       img.setAttribute("aria-hidden", active ? "false" : "true");
     });
     if (moveFocus) tab.focus();
+
+    // On the phone pill-scroller (see css/layout.css), keep the active
+    // pill centered in view — including when Home/End/arrow keys jump
+    // straight to a tab that's currently scrolled off-screen.
+    if (window.innerWidth <= 640) {
+      tab.scrollIntoView({
+        behavior: reduceMotion ? "auto" : "smooth",
+        inline: "center",
+        block: "nearest"
+      });
+    }
   }
 
   tabs.forEach(function (tab, i) {

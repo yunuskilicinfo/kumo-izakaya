@@ -113,8 +113,25 @@ html.fonts-loaded .hero__seal{
 @media (prefers-reduced-motion: reduce){
   .hero__seal{ opacity: 1; transform: none; animation: none; }
 }
+
+/* ---------------------------------------------------------------------
+   Hero on phones — the seal stays (moved to bottom-center so it never
+   collides with the centered subhead), the wordmark drops to a size
+   that fits "Kumo Izakaya" on one line instead of wrapping, and the
+   bottom padding tightens so the whole mark sits comfortably inside
+   the first screen without crowding the safe-area edge.
+   --------------------------------------------------------------------- */
 @media (max-width: 640px){
-  .hero__seal{ display: none; }
+  .hero__content{ padding-bottom: var(--sp-8); }
+  .wordmark{ font-size: clamp(2.375rem, 12vw, 2.875rem); }
+  .hero__seal{
+    left: 0;
+    right: 0;
+    width: 2rem;
+    height: 2rem;
+    margin-inline: auto;
+    bottom: var(--sp-5);
+  }
 }
 
 /* ---------------------------------------------------------------------
@@ -274,6 +291,44 @@ html.fonts-loaded .hero__seal{
   }
   .menu-tab[aria-selected="true"]{ border-bottom-color: var(--momiji); }
   .menu-photo{ position: static; order: -1; margin-bottom: var(--sp-6); aspect-ratio: 16 / 10; }
+}
+
+/* ---------------------------------------------------------------------
+   Menu tabs on phones — a horizontally-swiping pill row instead of a
+   wrapped, underlined list. Snaps as you drag, fades at both edges to
+   hint there's more, and the active pill fills solid so the current
+   category reads instantly without a second glance.
+   --------------------------------------------------------------------- */
+@media (max-width: 640px){
+  .menu-tabs{
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x proximity;
+    scrollbar-width: none;
+    gap: var(--sp-3);
+    border-bottom: none;
+    margin-inline: calc(var(--gutter) * -1);
+    padding: var(--sp-1) var(--gutter) var(--sp-5);
+    mask-image: linear-gradient(to right, transparent, black var(--gutter), black calc(100% - var(--gutter)), transparent);
+    -webkit-mask-image: linear-gradient(to right, transparent, black var(--gutter), black calc(100% - var(--gutter)), transparent);
+  }
+  .menu-tabs::-webkit-scrollbar{ display: none; }
+  .menu-tab{
+    flex: 0 0 auto;
+    scroll-snap-align: center;
+    padding: var(--sp-2) var(--sp-5);
+    border: 1px solid var(--rule-dark);
+    border-radius: var(--radius-pill);
+    font-size: var(--step-small);
+    transition: background-color .25s var(--ease), color .25s var(--ease), border-color .25s var(--ease);
+  }
+  .menu-tab[aria-selected="true"]{
+    background: var(--momiji);
+    border-color: var(--momiji);
+    color: var(--washi);
+  }
+  .menu-photo{ aspect-ratio: 4 / 3; }
 }
 
 /* ---------------------------------------------------------------------
