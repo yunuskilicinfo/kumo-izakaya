@@ -165,6 +165,8 @@ window.KUMO_I18N = {
   "reserve-address-label": { tr: "Adres", en: "Address" },
   "reserve-address-value": { tr: "Bulut Sokak No. 7<br>Beşiktaş, İstanbul", en: "7 Bulut Sokak<br>Beşiktaş, Istanbul" },
   "reserve-map-link": { tr: "Haritada aç", en: "Open in Maps" },
+  "new-tab-hint": { tr: " (yeni sekmede açılır)", en: " (opens in a new tab)" },
+  "reserve-map-title": { tr: "Kumo Izakaya harita", en: "Kumo Izakaya map" },
   "reserve-contact-label": { tr: "İletişim", en: "Contact" },
   "reserve-hours-label": { tr: "Çalışma Saatleri", en: "Hours" },
   "reserve-hours-days1": { tr: "Salı – Cumartesi", en: "Tuesday – Saturday" },

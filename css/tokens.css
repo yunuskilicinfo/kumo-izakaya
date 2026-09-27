@@ -15,7 +15,9 @@
   --momiji-deep: #4F4C46;
   --kin:    #B8955A;   /* ember brass — the single warm accent, used sparingly */
   --kin-dim: rgba(184,149,90,.5);
-  --ash:    #8B867F;   /* secondary text — dark grounds only */
+  --ash:    #8B867F;   /* secondary text — dark grounds only (4.8:1 on sumi) */
+  --ash-on-light: #6B6760; /* secondary text on washi — same role, AA-safe (5.2:1) */
+  --kin-on-light: #8C6A38; /* ember brass, darkened for washi body text (4.6:1) */
   --sumi-text: #232220; /* body text on washi */
   --rule-dark: rgba(247,246,243,.14);   /* hairline on sumi */
   --rule-light: rgba(35,34,32,.13);     /* hairline on washi */
@@ -94,5 +96,5 @@
   --img-dish-sake:     url("../assets/img/kumo-dish-sake.webp");
   --img-hall:      url("../assets/img/kumo-lounge.webp");
   --img-corridor:  url("../assets/img/kumo-terrace.webp");
-  --img-private:   url("../assets/img/kumo-interior.jpg");
+  --img-private:   url("../assets/img/kumo-interior.webp");
 }

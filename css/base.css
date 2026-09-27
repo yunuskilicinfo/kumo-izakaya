@@ -83,6 +83,17 @@ html.fonts-loaded .wordmark{ visibility: visible; }
 /* ---- Mobile nav panel open: lock background scroll ---- */
 html.is-locked{ overflow: hidden; }
 
+/* ---- Lazy background photos ----
+   [data-lazy-bg] elements carry their real background-image as an inline
+   style (see index.html / tokens.css). With JS, hold that image back with
+   !important until js/main.js's IntersectionObserver adds .bg-in as the
+   element nears the viewport. Without JS (no html.js class) this rule
+   never applies, so the image just shows immediately — never a stuck-empty
+   section for no-JS visitors. */
+html.js [data-lazy-bg]:not(.bg-in){
+  background-image: none !important;
+}
+
 /* ---- Scroll reveal (Zuma-style entrance) ----
    .reveal elements are only given the hidden "pre" state by JS, once it has
    confirmed prefers-reduced-motion is off — so no-JS and reduced-motion

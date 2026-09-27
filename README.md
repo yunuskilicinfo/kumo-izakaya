@@ -39,12 +39,12 @@ Sitedeki her fotoğraf, `css/tokens.css` içindeki tek bir değişkenden besleni
 --img-dish-sake:     url("../assets/img/kumo-dish-sake.webp");
 --img-hall:      url("../assets/img/kumo-lounge.webp");
 --img-corridor:  url("../assets/img/kumo-terrace.webp");
---img-private:   url("../assets/img/kumo-interior.jpg");
+--img-private:   url("../assets/img/kumo-interior.webp");
 ```
 
 **Şu anki durum:** Hero, şef, mekân galerisi (2 kare + 1 geniş kare) ve tüm menü kategorisi fotoğrafları (Otsumami/Sashimi/Robata/Kanmi/Sake) gerçek fotoğraflardan geliyor. Placeholder kalmadı.
 
-`assets/img/kumo-hall.jpg`, `kumo-corridor.jpg`, `kumo-bar.jpg`, `kumo-private.jpg` (ilk kırmızı akçaağaç serisinden) klasörde duruyor ama artık çağrılmıyor — yerlerini `kumo-lounge.webp`, `kumo-terrace.webp`, `kumo-interior.jpg` aldı. İsterseniz eski dosyaları silebilirsiniz.
+Kullanılmayan eski kırmızı-akçaağaç serisi (`kumo-hall.jpg`, `kumo-corridor.jpg`, `kumo-bar.jpg`, `kumo-private.jpg`) repodan silindi — yerlerini `kumo-lounge.webp`, `kumo-terrace.webp`, `kumo-interior.webp` aldı.
 
 Fotoğraf değiştirirken:
 
@@ -94,7 +94,7 @@ CSS custom properties, `:focus-visible`, `aspect-ratio` ve `URLSearchParams` kul
 ## Yerel önizleme
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File .claude/serve.ps1 -Port 8430
+powershell -ExecutionPolicy Bypass -File .claude/serve.ps1 -Port 8431
 ```
 
-ardından `http://localhost:8430/` adresini açın.
+ardından `http://localhost:8431/` adresini açın.

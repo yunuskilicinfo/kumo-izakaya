@@ -4,8 +4,8 @@
     {
       "name": "kumo-izakaya",
       "runtimeExecutable": "powershell",
-      "runtimeArgs": ["-ExecutionPolicy", "Bypass", "-File", ".claude/serve.ps1", "-Port", "8430"],
-      "port": 8430
+      "runtimeArgs": ["-ExecutionPolicy", "Bypass", "-File", ".claude/serve.ps1", "-Port", "8431"],
+      "port": 8431
     }
   ]
 }

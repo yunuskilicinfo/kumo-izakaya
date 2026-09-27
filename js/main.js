@@ -39,6 +39,30 @@
   }
 
   /* -----------------------------------------------------------------
+     Lazy background photos — see css/base.css [data-lazy-bg] rule.
+     Reveals each off-screen photo (menu's inactive dish shots, the venue
+     gallery, the chef portrait) shortly before it scrolls into view,
+     instead of loading all photography on first paint.
+     ----------------------------------------------------------------- */
+  var lazyBgEls = Array.prototype.slice.call(document.querySelectorAll("[data-lazy-bg]"));
+  if (lazyBgEls.length > 0 && "IntersectionObserver" in window) {
+    var lazyBgObserver = new IntersectionObserver(
+      function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("bg-in");
+            lazyBgObserver.unobserve(entry.target);
+          }
+        });
+      },
+      { rootMargin: "400px 0px" }
+    );
+    lazyBgEls.forEach(function (el) { lazyBgObserver.observe(el); });
+  } else {
+    lazyBgEls.forEach(function (el) { el.classList.add("bg-in"); });
+  }
+
+  /* -----------------------------------------------------------------
      Topbar: flip contrast to match whichever section sits behind it.
      ----------------------------------------------------------------- */
   var topbar = document.getElementById("topbar");
@@ -87,6 +111,10 @@
     topbarNav.setAttribute("data-open", open ? "true" : "false");
     document.documentElement.classList.toggle("nav-open", open);
     document.documentElement.classList.toggle("is-locked", open);
+    if (open) {
+      var firstLink = topbarNav.querySelector("a, button");
+      if (firstLink) firstLink.focus();
+    }
   }
 
   if (navToggle && topbarNav) {
@@ -190,6 +218,11 @@
       var key = el.getAttribute("data-i18n-content");
       var entry = dict[key];
       if (entry && entry[lang] != null) el.setAttribute("content", entry[lang]);
+    });
+    document.querySelectorAll("[data-i18n-title]").forEach(function (el) {
+      var key = el.getAttribute("data-i18n-title");
+      var entry = dict[key];
+      if (entry && entry[lang] != null) el.setAttribute("title", entry[lang]);
     });
 
     document.querySelectorAll(".lang-switch button").forEach(function (btn) {

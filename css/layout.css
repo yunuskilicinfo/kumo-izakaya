@@ -46,8 +46,8 @@ section{
    --------------------------------------------------------------------- */
 .hero{
   position: relative;
-  min-height: 100svh;
   min-height: 100vh;
+  min-height: 100svh;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
@@ -171,6 +171,11 @@ html.fonts-loaded .hero__seal{
 .menu-tab[aria-selected="true"]{
   color: var(--washi);
   border-left-color: var(--momiji);
+}
+.menu-tab:focus-visible{
+  outline: 2px solid var(--kin);
+  outline-offset: 3px;
+  border-radius: 2px;
 }
 
 .menu-panels{ position: relative; min-height: 20rem; }
@@ -298,7 +303,7 @@ html.fonts-loaded .hero__seal{
 .kaiseki-step__desc{
   margin-top: var(--sp-1);
   font-size: var(--step-small);
-  color: var(--ash);
+  color: var(--ash-on-light);
 }
 .omakase__price{
   margin-top: var(--sp-7);
@@ -309,7 +314,7 @@ html.fonts-loaded .hero__seal{
 .omakase__price-value{
   font-family: var(--font-display);
   font-size: var(--step-title);
-  color: var(--kin);
+  color: var(--kin-on-light);
 }
 
 /* ---------------------------------------------------------------------
@@ -350,7 +355,7 @@ html.fonts-loaded .hero__seal{
 .chef__role{
   display: block;
   font-size: var(--step-small);
-  color: var(--ash);
+  color: var(--ash-on-light);
   margin-top: var(--sp-2);
 }
 @media (max-width: 860px){

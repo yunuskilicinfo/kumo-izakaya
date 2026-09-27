@@ -32,7 +32,14 @@ while ($listener.IsListening) {
     if ($path -eq "/") { $path = "/index.html" }
     $filePath = Join-Path $Root ($path.TrimStart("/"))
 
-    if (Test-Path $filePath -PathType Leaf) {
+    # Resolve to an absolute path and refuse anything that escapes $Root
+    # (e.g. "..%2F..%2F" traversal) before touching the filesystem.
+    $rootFull = [System.IO.Path]::GetFullPath($Root)
+    $requestedFull = [System.IO.Path]::GetFullPath($filePath)
+    $withinRoot = $requestedFull.StartsWith($rootFull, [System.StringComparison]::OrdinalIgnoreCase)
+
+    if ($withinRoot -and (Test-Path $requestedFull -PathType Leaf)) {
+      $filePath = $requestedFull
       $ext = [System.IO.Path]::GetExtension($filePath).ToLower()
       $contentType = $mime[$ext]
       if (-not $contentType) { $contentType = "application/octet-stream" }
