@@ -1,0 +1,405 @@
+/* ==========================================================================
+   KUMO IZAKAYA — Layout
+   The page opens on paper (washi) and quiet black-and-white, then drops
+   into ink (sumi) where color — the lacquer red of the room itself —
+   appears for the first time. Left-aligned throughout; the wordmark is
+   the one centered exception.
+   ========================================================================== */
+
+.wrap{
+  max-width: var(--maxw);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+section{
+  scroll-margin-top: var(--nav-h);
+}
+
+/* ---------------------------------------------------------------------
+   Section shell
+   --------------------------------------------------------------------- */
+.section{
+  padding-block: var(--sp-section);
+}
+.section--washi{ background: var(--washi); color: var(--sumi-text); }
+.section--sumi{  background: var(--sumi);  color: var(--washi); }
+
+.section__head{
+  max-width: 36rem;
+  margin-bottom: var(--sp-9);
+}
+.section__head h2{
+  font-size: var(--step-display);
+}
+.section__head p{
+  margin-top: var(--sp-4);
+  font-size: var(--step-lead);
+  opacity: .82;
+  font-family: var(--font-display);
+  line-height: var(--lh-body-serif);
+}
+
+/* ---------------------------------------------------------------------
+   Hero — Hiden-style: full-bleed grayscale photo, wordmark centered
+   low, thin tracked nav fixed above it.
+   --------------------------------------------------------------------- */
+.hero{
+  position: relative;
+  min-height: 100svh;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  overflow: clip;
+  background: var(--sumi);
+}
+.hero__photo{
+  position: absolute;
+  inset: 0;
+  background-image: var(--img-hero);
+  background-size: cover;
+  background-position: center;
+  filter: grayscale(1) contrast(1.05) brightness(.78);
+}
+.hero__scrim{
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(0deg, rgba(16,12,10,.86) 0%, rgba(16,12,10,.28) 46%, rgba(16,12,10,.5) 100%);
+  pointer-events: none;
+}
+.hero__content{
+  position: relative;
+  width: 100%;
+  padding: 0 var(--gutter) var(--sp-9);
+  text-align: center;
+}
+.hero__kanji{
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  color: var(--kin);
+  margin-bottom: var(--sp-4);
+}
+.wordmark{
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: var(--wordmark);
+  line-height: var(--lh-wordmark);
+  color: var(--washi);
+}
+.hero__sub{
+  margin: var(--sp-5) auto 0;
+  max-width: 34ch;
+  font-size: var(--step-lead);
+  color: var(--ash);
+}
+.hero__seal{
+  position: absolute;
+  right: var(--gutter);
+  bottom: var(--sp-8);
+  width: 3.25rem;
+  height: 3.25rem;
+  opacity: 0;
+  transform: scale(.7);
+}
+html.fonts-loaded .hero__seal{
+  animation: seal-stamp var(--dur-seal) var(--ease) 400ms forwards;
+}
+@keyframes seal-stamp{
+  0%{ opacity: 0; transform: scale(1.4) rotate(-8deg); }
+  60%{ opacity: 1; transform: scale(.92) rotate(2deg); }
+  100%{ opacity: 1; transform: scale(1) rotate(0); }
+}
+@media (prefers-reduced-motion: reduce){
+  .hero__seal{ opacity: 1; transform: none; animation: none; }
+}
+@media (max-width: 640px){
+  .hero__seal{ display: none; }
+}
+
+/* ---------------------------------------------------------------------
+   Story — asymmetric two columns on washi
+   --------------------------------------------------------------------- */
+.story{
+  display: grid;
+  grid-template-columns: 1fr .82fr;
+  gap: var(--sp-9);
+  align-items: start;
+}
+.story__text > * + *{ margin-top: var(--sp-5); }
+.story__text p{ font-size: var(--step-body); }
+.story__motif{
+  justify-self: end;
+  width: min(100%, 22rem);
+  color: var(--momiji);
+  opacity: .9;
+}
+@media (max-width: 860px){
+  .story{ grid-template-columns: 1fr; }
+  .story__motif{ justify-self: start; width: 60vw; max-width: 14rem; }
+}
+
+/* ---------------------------------------------------------------------
+   Menu — the page's one bold gesture. Vertical tablist left, dish
+   list center, single large photo right that crossfades per category.
+   --------------------------------------------------------------------- */
+.menu{
+  display: grid;
+  grid-template-columns: 12rem 1.35fr 1fr;
+  gap: var(--sp-8);
+  align-items: start;
+}
+.menu-tabs{
+  display: flex;
+  flex-direction: column;
+  border-left: 1px solid var(--rule-dark);
+  position: sticky;
+  top: calc(var(--nav-h) + var(--sp-6));
+}
+.menu-tab{
+  all: unset;
+  cursor: pointer;
+  padding: var(--sp-3) 0 var(--sp-3) var(--sp-5);
+  margin-left: -1px;
+  border-left: 2px solid transparent;
+  font-family: var(--font-display);
+  font-size: var(--step-lead);
+  color: var(--ash);
+  transition: color .2s var(--ease), border-color .2s var(--ease);
+}
+.menu-tab:hover{ color: var(--washi); }
+.menu-tab[aria-selected="true"]{
+  color: var(--washi);
+  border-left-color: var(--momiji);
+}
+
+.menu-panels{ position: relative; min-height: 20rem; }
+.menu-panel{
+  display: none;
+}
+.menu-panel[data-active]{
+  display: block;
+  animation: panel-in var(--dur-tab-in) var(--ease);
+}
+@keyframes panel-in{
+  from{ opacity: 0; transform: translateY(8px); }
+  to{ opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: reduce){
+  .menu-panel[data-active]{ animation: none; }
+}
+
+.menu-panel__desc{
+  font-size: var(--step-small);
+  color: var(--ash);
+  margin-bottom: var(--sp-6);
+  max-width: 42ch;
+}
+.dish-list{ display: flex; flex-direction: column; }
+.dish{
+  padding: var(--sp-4) 0;
+  border-top: var(--rail);
+}
+.dish:last-child{ border-bottom: var(--rail); }
+.dish__row{
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-3);
+}
+.dish__name{
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+}
+.dish__leader{
+  flex: 1 1 auto;
+  min-width: var(--sp-6);
+  height: 1em;
+  background:
+    radial-gradient(circle at center, var(--rule-dark) 1px, transparent 1.5px)
+    bottom left / 7px 4px repeat-x;
+}
+.dish__price{
+  font-variant-numeric: tabular-nums;
+  font-size: var(--step-small);
+  color: var(--kin);
+  white-space: nowrap;
+}
+.dish__desc{
+  margin-top: var(--sp-1);
+  font-size: var(--step-small);
+  color: var(--ash);
+}
+
+.menu-photo{
+  position: sticky;
+  top: calc(var(--nav-h) + var(--sp-6));
+  aspect-ratio: 4 / 5;
+  background-size: cover;
+  background-position: center;
+  background-color: var(--sumi-deep);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+.menu-photo__img{
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  opacity: 0;
+  transition: opacity var(--dur-photo) var(--ease);
+}
+.menu-photo__img[data-active]{ opacity: 1; }
+
+@media (max-width: 980px){
+  .menu{ grid-template-columns: 1fr; }
+  .menu-tabs{
+    position: static;
+    flex-direction: row;
+    flex-wrap: wrap;
+    border-left: none;
+    border-bottom: 1px solid var(--rule-dark);
+    gap: var(--sp-2) var(--sp-6);
+    padding-bottom: var(--sp-4);
+    margin-bottom: var(--sp-6);
+  }
+  .menu-tab{
+    padding: var(--sp-2) 0;
+    border-left: none;
+    border-bottom: 2px solid transparent;
+  }
+  .menu-tab[aria-selected="true"]{ border-bottom-color: var(--momiji); }
+  .menu-photo{ position: static; order: -1; margin-bottom: var(--sp-6); aspect-ratio: 16 / 10; }
+}
+
+/* ---------------------------------------------------------------------
+   Omakase — kaiseki sequence, numbered because it truly is one
+   --------------------------------------------------------------------- */
+.kaiseki{
+  display: flex;
+  flex-direction: column;
+}
+.kaiseki-step{
+  display: grid;
+  grid-template-columns: 4rem 1fr;
+  gap: var(--sp-5);
+  padding: var(--sp-5) 0;
+  border-top: var(--rail);
+}
+.kaiseki-step:last-child{ border-bottom: var(--rail); }
+.kaiseki-step__num{
+  font-family: var(--font-display);
+  font-size: var(--step-title);
+  color: var(--momiji);
+}
+.kaiseki-step__name{
+  font-family: var(--font-display);
+  font-size: var(--step-lead);
+}
+.kaiseki-step__desc{
+  margin-top: var(--sp-1);
+  font-size: var(--step-small);
+  color: var(--ash);
+}
+.omakase__price{
+  margin-top: var(--sp-7);
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-4);
+}
+.omakase__price-value{
+  font-family: var(--font-display);
+  font-size: var(--step-title);
+  color: var(--kin);
+}
+
+/* ---------------------------------------------------------------------
+   Mekân — gallery, color arrives here for the first time
+   --------------------------------------------------------------------- */
+.venue{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--sp-4);
+}
+.venue__item--hall{ --media-ratio: 108%; }
+.venue__item--corridor{ --media-ratio: 108%; }
+.venue__item--private{
+  grid-column: 1 / -1;
+  --media-ratio: 52%;
+}
+
+@media (max-width: 720px){
+  .venue{ grid-template-columns: 1fr; }
+  .venue__item--hall, .venue__item--corridor{ --media-ratio: 78%; }
+  .venue__item--private{ --media-ratio: 78%; }
+}
+
+/* ---------------------------------------------------------------------
+   Şef — portrait + text
+   --------------------------------------------------------------------- */
+.chef{
+  display: grid;
+  grid-template-columns: .9fr 1fr;
+  gap: var(--sp-9);
+  align-items: center;
+}
+.chef__media{ --media-ratio: 118%; }
+.chef__name{
+  font-size: var(--step-title);
+  margin-top: var(--sp-7);
+}
+.chef__role{
+  display: block;
+  font-size: var(--step-small);
+  color: var(--ash);
+  margin-top: var(--sp-2);
+}
+@media (max-width: 860px){
+  .chef{ grid-template-columns: 1fr; }
+  .chef__media{ order: -1; --media-ratio: 70%; }
+}
+
+/* ---------------------------------------------------------------------
+   Rezervasyon
+   --------------------------------------------------------------------- */
+.reserve{
+  display: grid;
+  grid-template-columns: 1fr 1.1fr;
+  gap: var(--sp-9);
+}
+.reserve__info{ align-self: start; }
+.reserve__block + .reserve__block{ margin-top: var(--sp-6); }
+.reserve__label{
+  display: block;
+  font-size: var(--step-label);
+  letter-spacing: var(--track-label);
+  color: var(--momiji);
+  margin-bottom: var(--sp-2);
+}
+.reserve__value{ font-size: var(--step-lead); font-family: var(--font-display); }
+.reserve dl{ font-size: var(--step-body); }
+.reserve dt{ color: var(--momiji); font-size: var(--step-label); margin-top: var(--sp-4); }
+.reserve dt:first-child{ margin-top: 0; }
+
+@media (max-width: 860px){
+  .reserve{ grid-template-columns: 1fr; }
+}
+
+/* ---------------------------------------------------------------------
+   Footer
+   --------------------------------------------------------------------- */
+.footer{
+  padding-block: var(--sp-7);
+  border-top: var(--rail);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--sp-4);
+  font-size: var(--step-small);
+  color: var(--ash);
+}
+.footer__mark{
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  color: var(--washi);
+}

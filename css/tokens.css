@@ -1,0 +1,98 @@
+/* ==========================================================================
+   KUMO IZAKAYA — Design tokens
+   Single source of truth for color, type, spacing, and photography.
+   Palette is ash and paper: spent charcoal, ash-grey, near-white — the two
+   states of the same fire — with one warm ember-brass accent.
+   ========================================================================== */
+
+:root{
+  /* ---- Color — ash and paper, the two states of the same fire ---- */
+  --sumi:   #1B1A18;   /* spent charcoal — ground for dark sections */
+  --sumi-deep: #121110;
+  --washi:  #F7F6F3;   /* ash-white paper — ground for light sections */
+  --washi-dim: #ECEAE5;
+  --momiji: #6E6A63;   /* warm ash grey — structural fill (buttons, active states) */
+  --momiji-deep: #4F4C46;
+  --kin:    #B8955A;   /* ember brass — the single warm accent, used sparingly */
+  --kin-dim: rgba(184,149,90,.5);
+  --ash:    #8B867F;   /* secondary text — dark grounds only */
+  --sumi-text: #232220; /* body text on washi */
+  --rule-dark: rgba(247,246,243,.14);   /* hairline on sumi */
+  --rule-light: rgba(35,34,32,.13);     /* hairline on washi */
+
+  /* ---- Type families ----
+     Shippori Mincho: headings, wordmark, dish names — a Japanese Mincho
+     serif with matching kanji weight, not a generic Western display face.
+     Zen Kaku Gothic New: body copy, labels, form fields. */
+  --font-display: "Shippori Mincho", "Hiragino Mincho ProN", Georgia, serif;
+  --font-body: "Zen Kaku Gothic New", "Hiragino Sans", "Helvetica Neue", Arial, sans-serif;
+
+  /* ---- Type scale — 16px base, ratio 1.333 ---- */
+  --wordmark: clamp(56px, 15vw, 168px);
+  --step-display: clamp(2rem, 4.2vw, 3.35rem);
+  --step-title:   clamp(1.375rem, 2.1vw, 1.75rem);
+  --step-lead:    clamp(1.0625rem, 1.4vw, 1.25rem);
+  --step-body:    1rem;
+  --step-small:   .875rem;
+  --step-label:   .75rem;
+
+  --lh-tight: 1.15;
+  --lh-wordmark: 1.05;
+  --lh-body-serif: 1.7;
+  --lh-body-sans: 1.6;
+  --track-nav: .12em;
+  --track-label: .08em;
+
+  --measure: 62ch;
+
+  /* ---- Spacing ---- */
+  --sp-1: .25rem;
+  --sp-2: .5rem;
+  --sp-3: .75rem;
+  --sp-4: 1rem;
+  --sp-5: 1.5rem;
+  --sp-6: 2rem;
+  --sp-7: 3rem;
+  --sp-8: 4rem;
+  --sp-9: 6rem;
+  --sp-10: 8rem;
+  --sp-section: clamp(4.5rem, 10vw, 9rem);
+
+  /* ---- Layout ---- */
+  --maxw: 78rem;
+  --gutter: clamp(1.25rem, 5vw, 4rem);
+  --rail: 1px solid var(--rule-dark);
+  --nav-h: 4.25rem;
+
+  /* ---- Motion ---- */
+  --ease: cubic-bezier(.16,1,.3,1);
+  --dur-seal: 620ms;
+  --dur-tab-out: 180ms;
+  --dur-tab-in: 280ms;
+  --dur-photo: 400ms;
+  --dur-reveal: 700ms;
+  --reveal-y: 28px;
+
+  /* ---- Misc ---- */
+  --radius-pill: 999px;
+  --radius-sm: 3px;
+
+  /* =========================================================================
+     PHOTOGRAPHY — the only place any image reference lives.
+     Swap one line per photo when new photography arrives; nothing else
+     in the markup or component CSS needs to change.
+     ========================================================================= */
+  --ph-sumi: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4MDAiIGhlaWdodD0iODAwIiB2aWV3Qm94PSIwIDAgODAwIDgwMCI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+PHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjM0EzODM1Ii8+PHN0b3Agb2Zmc2V0PSIuNTUiIHN0b3AtY29sb3I9IiMxQjFBMTgiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiMxMjExMTAiLz48L2xpbmVhckdyYWRpZW50PjxmaWx0ZXIgaWQ9Im4iPjxmZVR1cmJ1bGVuY2UgdHlwZT0iZnJhY3RhbE5vaXNlIiBiYXNlRnJlcXVlbmN5PSIwLjkiIG51bU9jdGF2ZXM9IjIiIHN0aXRjaFRpbGVzPSJzdGl0Y2giIHJlc3VsdD0idCIvPjxmZUNvbG9yTWF0cml4IGluPSJ0IiB0eXBlPSJtYXRyaXgiIHZhbHVlcz0iMCAwIDAgMCAwICAwIDAgMCAwIDAgIDAgMCAwIDAgMCAgMCAwIDAgMC4wNyAwIi8+PC9maWx0ZXI+PC9kZWZzPjxyZWN0IHdpZHRoPSI4MDAiIGhlaWdodD0iODAwIiBmaWxsPSJ1cmwoI2cpIi8+PHJlY3Qgd2lkdGg9IjgwMCIgaGVpZ2h0PSI4MDAiIGZpbHRlcj0idXJsKCNuKSIvPjwvc3ZnPg==");
+
+  /* One line each — replace with the real photo path when supplied. */
+  --img-hero:      url("../assets/img/kumo-hero.webp");
+  --img-chef:      url("../assets/img/kumo-chef.webp");
+  --img-dish-otsumami: url("../assets/img/kumo-dish-otsumami.webp");
+  --img-dish-robata:   url("../assets/img/kumo-dish-robata.webp");
+  --img-dish-sashimi:  url("../assets/img/kumo-dish-sashimi.webp");
+  --img-dish-kanmi:    url("../assets/img/kumo-dish-kanmi.webp");
+  --img-dish-sake:     url("../assets/img/kumo-dish-sake.webp");
+  --img-hall:      url("../assets/img/kumo-lounge.webp");
+  --img-corridor:  url("../assets/img/kumo-terrace.webp");
+  --img-private:   url("../assets/img/kumo-interior.jpg");
+}

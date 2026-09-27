@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title data-i18n="meta-title">Kumo Izakaya — Beşiktaş'ta İzakaya ve Omakase</title>
+<meta name="description" data-i18n-content="meta-desc" content="Kumo Izakaya, İstanbul Beşiktaş'ta ocak ateşi ve mevsimin balığı üzerine kurulu bir izakaya. Omakase, robata ve sake eşleşmeleri — masanızı ayırtın.">
+<!-- PLACEHOLDER: gerçek alan adı belli olunca bu canonical linki ve aşağıdaki og:url'ü güncelleyin -->
+<link rel="canonical" href="https://kumoizakaya.com/">
+
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" href="assets/icons/favicon-32.png" type="image/png" sizes="32x32">
+<link rel="icon" href="assets/icons/favicon-16.png" type="image/png" sizes="16x16">
+<link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+<link rel="icon" href="assets/icons/icon-512.png" type="image/png" sizes="512x512">
+
+<meta property="og:type" content="restaurant.restaurant">
+<meta property="og:site_name" content="Kumo Izakaya">
+<meta property="og:title" data-i18n-content="meta-title" content="Kumo Izakaya — Beşiktaş'ta İzakaya ve Omakase">
+<meta property="og:description" data-i18n-content="meta-desc" content="Kumo Izakaya, İstanbul Beşiktaş'ta ocak ateşi ve mevsimin balığı üzerine kurulu bir izakaya. Omakase, robata ve sake eşleşmeleri — masanızı ayırtın.">
+<!-- PLACEHOLDER: gerçek alan adı belli olunca güncelleyin -->
+<meta property="og:url" content="https://kumoizakaya.com/">
+<meta property="og:image" content="https://kumoizakaya.com/assets/icons/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="tr_TR">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" data-i18n-content="meta-title" content="Kumo Izakaya — Beşiktaş'ta İzakaya ve Omakase">
+<meta name="twitter:description" data-i18n-content="meta-desc" content="Kumo Izakaya, İstanbul Beşiktaş'ta ocak ateşi ve mevsimin balığı üzerine kurulu bir izakaya. Omakase, robata ve sake eşleşmeleri — masanızı ayırtın.">
+<meta name="twitter:image" content="https://kumoizakaya.com/assets/icons/og-image.jpg">
+
+<script>
+  document.documentElement.classList.add('js');
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600&family=Zen+Kaku+Gothic+New:wght@300;400;500&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/layout.css">
+<link rel="stylesheet" href="css/components.css">
+
+<!-- Yapısal veri (JSON-LD). Yorum/derecelendirme şeması eklenmedi: sitede
+     yorum bölümü yok. Placeholder içerik: telefon, e-posta, adres ve fiyatlar
+     tasarım önizlemesi amaçlıdır — gerçek bilgilerle güncellenmeli. -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Restaurant",
+      "@id": "https://kumoizakaya.com/#restaurant",
+      "name": "Kumo Izakaya",
+      "image": "https://kumoizakaya.com/assets/icons/og-image.jpg",
+      "url": "https://kumoizakaya.com/",
+      "telephone": "+90-212-000-00-00",
+      "email": "masa@kumoizakaya.example",
+      "servesCuisine": ["Japanese", "Izakaya", "Omakase"],
+      "priceRange": "₺₺₺",
+      "acceptsReservations": true,
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Bulut Sokak No. 7",
+        "addressLocality": "Beşiktaş",
+        "addressRegion": "İstanbul",
+        "addressCountry": "TR"
+      },
+      "openingHoursSpecification": [
+        {
+          "@type": "OpeningHoursSpecification",
+          "dayOfWeek": ["Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+          "opens": "18:00",
+          "closes": "23:59"
+        }
+      ],
+      "employee": {
+        "@type": "Person",
+        "name": "Ren Takahashi",
+        "jobTitle": "Executive Chef"
+      },
+      "hasMenu": { "@id": "https://kumoizakaya.com/#menu" }
+    },
+    {
+      "@type": "Menu",
+      "@id": "https://kumoizakaya.com/#menu",
+      "name": "Kumo Izakaya Menüsü",
+      "inLanguage": "tr",
+      "hasMenuSection": [
+        {
+          "@type": "MenuSection",
+          "name": "Otsumami",
+          "description": "Sake'nin yanına, ocak ısınırken.",
+          "hasMenuItem": [
+            { "@type": "MenuItem", "name": "Tsukune", "description": "Tavuk köftesi, tare sos, yumurta sarısı.", "offers": { "@type": "Offer", "price": "320", "priceCurrency": "TRY" } },
+            { "@type": "MenuItem", "name": "Edamame", "description": "Deniz tuzu ile buharda.", "offers": { "@type": "Offer", "price": "140", "priceCurrency": "TRY" } },
+            { "@type": "MenuItem", "name": "Agedashi tofu", "description": "Kızarmış tofu, dashi suyu, bonito talaşı.", "offers": { "@type": "Offer", "price": "260", "priceCurrency": "TRY" } }
+          ]
+        },
+        {
+          "@type": "MenuSection",
+          "name": "Sashimi & Nigiri",
+          "description": "Günün balığı, sabah pazarından.",
+          "hasMenuItem": [
+            { "@type": "MenuItem", "name": "Otoro nigiri (2 adet)", "description": "Ton balığının en yağlı kısmı, el yapımı.", "offers": { "@type": "Offer", "price": "780", "priceCurrency": "TRY" } },
+            { "@type": "MenuItem", "name": "Hamachi sashimi", "description": "Yemyeşil zencefil ve shiso ile.", "offers": { "@type": "Offer", "price": "520", "priceCurrency": "TRY" } },
+            { "@type": "MenuItem", "name": "Uni gunkan", "description": "Deniz kestanesi, nori, sushi pirinci.", "offers": { "@type": "Offer", "price": "640", "priceCurrency": "TRY" } }
+          ]
+        },
+        {
+          "@type": "MenuSection",
+          "name": "Robata",
+          "description": "Binchotan kömüründe, doğrudan ateşin üstünde.",
+          "hasMenuItem": [
+            { "@type": "MenuItem", "name": "Wagyu kushiyaki", "description": "Şiş üzerinde, kaba deniz tuzu ile.", "offers": { "@type": "Offer", "price": "980", "priceCurrency": "TRY" } },
+            { "@type": "MenuItem", "name": "Tütsülenmiş unagi", "description": "Tatlı soya glazürü, sansho biberi.", "offers": { "@type": "Offer", "price": "620", "priceCurrency": "TRY" } },
+            { "@type": "MenuItem", "name": "Közlenmiş patlıcan", "description": "Miso sos, susam.", "offers": { "@type": "Offer", "price": "240", "priceCurrency": "TRY" } }
+          ]
+        },
+        {
+          "@type": "MenuSection",
+          "name": "Kanmi",
+          "description": "Ocağın sonunda, hafif bir kapanış.",
+          "hasMenuItem": [
+            { "@type": "MenuItem", "name": "Matcha tiramisu", "description": "Mascarpone, matcha, kakao.", "offers": { "@type": "Offer", "price": "260", "priceCurrency": "TRY" } },
+            { "@type": "MenuItem", "name": "Kinako dondurma", "description": "Kavrulmuş soya unu, kara pekmez.", "offers": { "@type": "Offer", "price": "180", "priceCurrency": "TRY" } }
+          ]
+        },
+        {
+          "@type": "MenuSection",
+          "name": "Sake",
+          "description": "Sommelier eşliğinde, tabağa göre.",
+          "hasMenuItem": [
+            { "@type": "MenuItem", "name": "Junmai Daiginjo (kadeh)", "description": "Yumuşak, meyvemsi, soğuk servis.", "offers": { "@type": "Offer", "price": "450", "priceCurrency": "TRY" } },
+            { "@type": "MenuItem", "name": "Sommelier seçimi (3 kadeh)", "description": "Akşamın menüsüne göre eşleştirilir.", "offers": { "@type": "Offer", "price": "980", "priceCurrency": "TRY" } }
+          ]
+        },
+        {
+          "@type": "MenuSection",
+          "name": "Omakase",
+          "description": "Şefin o günkü seçimine bırakılan, beş perdelik bir sıra: Sakizuke, sashimi seçkisi, robata ateşinden, nigiri serisi, kanmi kapanışı.",
+          "hasMenuItem": [
+            { "@type": "MenuItem", "name": "Omakase (5 perde)", "description": "Sake eşleşmesiyle +₺1.400.", "offers": { "@type": "Offer", "price": "3200", "priceCurrency": "TRY" } }
+          ]
+        }
+      ]
+    }
+  ]
+}
+</script>
+</head>
+<body>
+
+<a class="skip-link" href="#main" data-i18n="skip-link">İçeriğe geç</a>
+
+<header class="topbar" id="topbar">
+  <a class="topbar__mark" href="#top">Kumo Izakaya</a>
+
+  <button class="nav-toggle" type="button" id="nav-toggle" aria-expanded="false" aria-controls="topbar-nav" aria-label="Menüyü aç">
+    <span class="nav-toggle__bars" aria-hidden="true"></span>
+  </button>
+
+  <nav class="topbar__nav" id="topbar-nav">
+    <a class="topbar__link" href="#hikaye" data-i18n="nav-story">Hikâye</a>
+    <a class="topbar__link" href="#menu" data-i18n="nav-menu">Menü</a>
+    <a class="topbar__link" href="#omakase" data-i18n="nav-omakase">Omakase</a>
+    <a class="topbar__link" href="#mekan" data-i18n="nav-venue">Mekân</a>
+    <a class="topbar__link" href="#sef" data-i18n="nav-chef">Şef</a>
+    <a class="topbar__link" href="#rezervasyon" data-i18n="nav-contact">İletişim</a>
+    <div class="lang-switch" role="group" aria-label="Dil seçimi">
+      <button type="button" data-lang="tr" aria-pressed="true">TR</button>
+      <span aria-hidden="true">/</span>
+      <button type="button" data-lang="en" aria-pressed="false">EN</button>
+    </div>
+    <button class="btn-pill" type="button" data-open-reserve data-i18n="nav-reserve">Masa ayırt</button>
+  </nav>
+</header>
+
+<main id="main">
+
+  <!-- ============================== HERO ============================== -->
+  <section class="hero" id="top" aria-label="Kumo Izakaya" data-ground="dark">
+    <div class="hero__photo" role="img" aria-label="" data-i18n-aria-label="hero-photo-alt"></div>
+    <div class="hero__scrim" aria-hidden="true"></div>
+    <div class="hero__content">
+      <div class="hero__kanji" aria-hidden="true">雲</div>
+      <h1 class="wordmark">Kumo Izakaya</h1>
+      <p class="hero__sub" data-i18n="hero-sub">Ateşin üstünde, bulutun altında bir sofra.</p>
+    </div>
+    <div class="hero__seal" aria-hidden="true">
+      <svg viewBox="0 0 100 100">
+        <rect x="4" y="4" width="92" height="92" rx="8" fill="currentColor"/>
+        <text x="50" y="68" text-anchor="middle" font-family="'Shippori Mincho', serif" font-size="56" fill="#F7F6F3">雲</text>
+      </svg>
+    </div>
+  </section>
+
+  <!-- ============================== HİKÂYE ============================== -->
+  <section class="section section--washi" id="hikaye" aria-labelledby="story-h" data-ground="light">
+    <div class="wrap story">
+      <div class="story__text reveal">
+        <span class="eyebrow" data-i18n="story-eyebrow">Anlayış</span>
+        <p data-i18n="story-intro" style="font-family:var(--font-body);font-size:var(--step-small);opacity:.7">Kumo Izakaya, İstanbul Beşiktaş'ta ocak ateşinde hazırlanan yemeklerle hizmet veren bir izakaya ve omakase restoranıdır.</p>
+        <h2 id="story-h" class="section__head" style="margin-bottom:0" data-i18n="story-h">Kumo, gökyüzünün en az sabit şekli demektir.</h2>
+        <p data-i18n="story-p1">Bulut hiçbir zaman aynı formda kalmaz; rüzgârla, ısıyla, ışıkla değişir. Izakaya kültürü de böyledir — tek bir sabit sunum değil, akşamın seyrine göre şekillenen bir sofra.</p>
+        <p data-i18n="story-p2">Kumo'da masaya gelen her tabak, ocaktaki ateşin o anki haliyle, sabah pazarından gelen balıkla ve o akşamın konuklarıyla şekillenir.</p>
+        <p class="pull-line" data-i18n="story-pull">Sabit olan tek şey, ocağın sıcaklığıdır.</p>
+      </div>
+      <div class="story__motif reveal" aria-hidden="true">
+        <svg viewBox="0 0 200 140">
+          <path d="M10 100 Q35 55 65 78 Q85 40 120 68 Q150 38 190 82" fill="none" stroke="currentColor" stroke-width="2"/>
+          <path d="M10 118 Q40 100 70 112 Q95 92 130 108 Q160 90 190 114" fill="none" stroke="currentColor" stroke-width="1.4" opacity=".5"/>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================== MENÜ ============================== -->
+  <section class="section section--sumi" id="menu" aria-labelledby="menu-h" data-ground="dark">
+    <div class="wrap">
+      <div class="section__head reveal">
+        <span class="eyebrow" data-i18n="menu-eyebrow">Sofra</span>
+        <h2 id="menu-h" data-i18n="menu-h">Ocağın etrafında, kategori kategori</h2>
+        <p data-i18n="menu-sub">Fiyatlar Türk Lirası cinsindendir.</p>
+      </div>
+
+      <div class="menu">
+        <div class="menu-tabs" role="tablist" aria-orientation="vertical" aria-label="Menü kategorileri" id="menu-tablist">
+          <button class="menu-tab" role="tab" id="tab-otsumami" aria-controls="panel-otsumami" aria-selected="true" data-i18n="cat-otsumami">Otsumami</button>
+          <button class="menu-tab" role="tab" id="tab-sashimi" aria-controls="panel-sashimi" aria-selected="false" tabindex="-1" data-i18n="cat-sashimi">Sashimi &amp; Nigiri</button>
+          <button class="menu-tab" role="tab" id="tab-robata" aria-controls="panel-robata" aria-selected="false" tabindex="-1" data-i18n="cat-robata">Robata</button>
+          <button class="menu-tab" role="tab" id="tab-kanmi" aria-controls="panel-kanmi" aria-selected="false" tabindex="-1" data-i18n="cat-kanmi">Kanmi</button>
+          <button class="menu-tab" role="tab" id="tab-sake" aria-controls="panel-sake" aria-selected="false" tabindex="-1" data-i18n="cat-sake">Sake</button>
+        </div>
+
+        <div class="menu-panels">
+          <div class="menu-panel" data-active role="tabpanel" id="panel-otsumami" aria-labelledby="tab-otsumami" data-photo="otsumami">
+            <p class="menu-panel__desc" data-i18n="cat-otsumami-desc">Sake'nin yanına, ocak ısınırken.</p>
+            <ul class="dish-list">
+              <li class="dish">
+                <div class="dish__row"><span class="dish__name" data-i18n="dish-tsukune">Tsukune</span><span class="dish__leader" aria-hidden="true"></span><span class="dish__price">₺320</span></div>
+                <p class="dish__desc" data-i18n="dish-tsukune-desc">Tavuk köftesi, tare sos, yumurta sarısı.</p>
+              </li>
+              <li class="dish">
+                <div class="dish__row"><span class="dish__name" data-i18n="dish-edamame">Edamame</span><span class="dish__leader" aria-hidden="true"></span><span class="dish__price">₺140</span></div>
+                <p class="dish__desc" data-i18n="dish-edamame-desc">Deniz tuzu ile buharda.</p>
+              </li>
+              <li class="dish">
+                <div class="dish__row"><span class="dish__name" data-i18n="dish-agedashi">Agedashi tofu</span><span class="dish__leader" aria-hidden="true"></span><span class="dish__price">₺260</span></div>
+                <p class="dish__desc" data-i18n="dish-agedashi-desc">Kızarmış tofu, dashi suyu, bonito talaşı.</p>
+              </li>
+            </ul>
+          </div>
+
+          <div class="menu-panel" role="tabpanel" id="panel-sashimi" aria-labelledby="tab-sashimi" hidden data-photo="sashimi">
+            <p class="menu-panel__desc" data-i18n="cat-sashimi-desc">Günün balığı, sabah pazarından.</p>
+            <ul class="dish-list">
+              <li class="dish">
+                <div class="dish__row"><span class="dish__name" data-i18n="dish-otoro">Otoro nigiri (2 adet)</span><span class="dish__leader" aria-hidden="true"></span><span class="dish__price">₺780</span></div>
+                <p class="dish__desc" data-i18n="dish-otoro-desc">Ton balığının en yağlı kısmı, el yapımı.</p>
+              </li>
+              <li class="dish">
+                <div class="dish__row"><span class="dish__name" data-i18n="dish-hamachi">Hamachi sashimi</span><span class="dish__leader" aria-hidden="true"></span><span class="dish__price">₺520</span></div>
+                <p class="dish__desc" data-i18n="dish-hamachi-desc">Yemyeşil zencefil ve shiso ile.</p>
+              </li>
+              <li class="dish">
+                <div class="dish__row"><span class="dish__name" data-i18n="dish-uni">Uni gunkan</span><span class="dish__leader" aria-hidden="true"></span><span class="dish__price">₺640</span></div>
+                <p class="dish__desc" data-i18n="dish-uni-desc">Deniz kestanesi, nori, sushi pirinci.</p>
+              </li>
+            </ul>
+          </div>
+
+          <div class="menu-panel" role="tabpanel" id="panel-robata" aria-labelledby="tab-robata" hidden data-photo="robata">
+            <p class="menu-panel__desc" data-i18n="cat-robata-desc">Binchotan kömüründe, doğrudan ateşin üstünde.</p>
+            <ul class="dish-list">
+              <li class="dish">
+                <div class="dish__row"><span class="dish__name" data-i18n="dish-wagyu">Wagyu kushiyaki</span><span class="dish__leader" aria-hidden="true"></span><span class="dish__price">₺980</span></div>
+                <p class="dish__desc" data-i18n="dish-wagyu-desc">Şiş üzerinde, kaba deniz tuzu ile.</p>
+              </li>
+              <li class="dish">
+                <div class="dish__row"><span class="dish__name" data-i18n="dish-unagi">Tütsülenmiş unagi</span><span class="dish__leader" aria-hidden="true"></span><span class="dish__price">₺620</span></div>
+                <p class="dish__desc" data-i18n="dish-unagi-desc">Tatlı soya glazürü, sansho biberi.</p>
+              </li>
+              <li class="dish">
+                <div class="dish__row"><span class="dish__name" data-i18n="dish-nasu">Közlenmiş patlıcan</span><span class="dish__leader" aria-hidden="true"></span><span class="dish__price">₺240</span></div>
+                <p class="dish__desc" data-i18n="dish-nasu-desc">Miso sos, susam.</p>
+              </li>
+            </ul>
+          </div>
+
+          <div class="menu-panel" role="tabpanel" id="panel-kanmi" aria-labelledby="tab-kanmi" hidden data-photo="kanmi">
+            <p class="menu-panel__desc" data-i18n="cat-kanmi-desc">Ocağın sonunda, hafif bir kapanış.</p>
+            <ul class="dish-list">
+              <li class="dish">
+                <div class="dish__row"><span class="dish__name" data-i18n="dish-matcha">Matcha tiramisu</span><span class="dish__leader" aria-hidden="true"></span><span class="dish__price">₺260</span></div>
+                <p class="dish__desc" data-i18n="dish-matcha-desc">Mascarpone, matcha, kakao.</p>
+              </li>
+              <li class="dish">
+                <div class="dish__row"><span class="dish__name" data-i18n="dish-kinako">Kinako dondurma</span><span class="dish__leader" aria-hidden="true"></span><span class="dish__price">₺180</span></div>
+                <p class="dish__desc" data-i18n="dish-kinako-desc">Kavrulmuş soya unu, kara pekmez.</p>
+              </li>
+            </ul>
+          </div>
+
+          <div class="menu-panel" role="tabpanel" id="panel-sake" aria-labelledby="tab-sake" hidden data-photo="sake">
+            <p class="menu-panel__desc" data-i18n="cat-sake-desc">Sommelier eşliğinde, tabağa göre.</p>
+            <ul class="dish-list">
+              <li class="dish">
+                <div class="dish__row"><span class="dish__name" data-i18n="dish-junmai">Junmai Daiginjo (kadeh)</span><span class="dish__leader" aria-hidden="true"></span><span class="dish__price">₺450</span></div>
+                <p class="dish__desc" data-i18n="dish-junmai-desc">Yumuşak, meyvemsi, soğuk servis.</p>
+              </li>
+              <li class="dish">
+                <div class="dish__row"><span class="dish__name" data-i18n="dish-tasting">Sommelier seçimi (3 kadeh)</span><span class="dish__leader" aria-hidden="true"></span><span class="dish__price">₺980</span></div>
+                <p class="dish__desc" data-i18n="dish-tasting-desc">Akşamın menüsüne göre eşleştirilir.</p>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="menu-photo">
+          <div class="menu-photo__img" data-active data-photo="otsumami" role="img" aria-hidden="false" data-i18n-aria-label="menu-photo-otsumami-alt" style="background-image:var(--img-dish-otsumami)"></div>
+          <div class="menu-photo__img" data-photo="sashimi" role="img" aria-hidden="true" data-i18n-aria-label="menu-photo-sashimi-alt" style="background-image:var(--img-dish-sashimi)"></div>
+          <div class="menu-photo__img" data-photo="robata" role="img" aria-hidden="true" data-i18n-aria-label="menu-photo-robata-alt" style="background-image:var(--img-dish-robata)"></div>
+          <div class="menu-photo__img" data-photo="kanmi" role="img" aria-hidden="true" data-i18n-aria-label="menu-photo-kanmi-alt" style="background-image:var(--img-dish-kanmi)"></div>
+          <div class="menu-photo__img" data-photo="sake" role="img" aria-hidden="true" data-i18n-aria-label="menu-photo-sake-alt" style="background-image:var(--img-dish-sake);background-position:center 35%"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================== OMAKASE ============================== -->
+  <section class="section section--washi" id="omakase" aria-labelledby="omakase-h" data-ground="light">
+    <div class="wrap">
+      <div class="section__head reveal">
+        <span class="eyebrow" data-i18n="omakase-eyebrow">Şefin masası</span>
+        <h2 id="omakase-h" data-i18n="omakase-h">Omakase, beş perde</h2>
+        <p data-i18n="omakase-sub">Şefin o günkü seçimine bırakılan, mevsime göre değişen bir sıra.</p>
+      </div>
+      <ol class="kaiseki">
+        <li class="kaiseki-step reveal">
+          <span class="kaiseki-step__num" aria-hidden="true">一</span>
+          <div>
+            <h3 class="kaiseki-step__name" data-i18n="kaiseki-1-name">Sakizuke</h3>
+            <p class="kaiseki-step__desc" data-i18n="kaiseki-1-desc">Mevsimin ilk lokması, ocak henüz ısınmadan.</p>
+          </div>
+        </li>
+        <li class="kaiseki-step reveal">
+          <span class="kaiseki-step__num" aria-hidden="true">二</span>
+          <div>
+            <h3 class="kaiseki-step__name" data-i18n="kaiseki-2-name">Sashimi seçkisi</h3>
+            <p class="kaiseki-step__desc" data-i18n="kaiseki-2-desc">Sabah pazarından üç balık, şefin tercihiyle.</p>
+          </div>
+        </li>
+        <li class="kaiseki-step reveal">
+          <span class="kaiseki-step__num" aria-hidden="true">三</span>
+          <div>
+            <h3 class="kaiseki-step__name" data-i18n="kaiseki-3-name">Robata ateşinden</h3>
+            <p class="kaiseki-step__desc" data-i18n="kaiseki-3-desc">Binchotan kömüründe, teker teker közlenir.</p>
+          </div>
+        </li>
+        <li class="kaiseki-step reveal">
+          <span class="kaiseki-step__num" aria-hidden="true">四</span>
+          <div>
+            <h3 class="kaiseki-step__name" data-i18n="kaiseki-4-name">Nigiri serisi</h3>
+            <p class="kaiseki-step__desc" data-i18n="kaiseki-4-desc">Şefin elinde, tek tek, sırayla.</p>
+          </div>
+        </li>
+        <li class="kaiseki-step reveal">
+          <span class="kaiseki-step__num" aria-hidden="true">五</span>
+          <div>
+            <h3 class="kaiseki-step__name" data-i18n="kaiseki-5-name">Kanmi kapanışı</h3>
+            <p class="kaiseki-step__desc" data-i18n="kaiseki-5-desc">Hafif bir tatlı, ocağın sönmesiyle.</p>
+          </div>
+        </li>
+      </ol>
+      <div class="omakase__price">
+        <span class="omakase__price-value">₺3.200</span>
+        <span data-i18n="omakase-price-note">/ kişi · sake eşleşmesiyle +₺1.400</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================== MEKÂN ============================== -->
+  <section class="section section--sumi" id="mekan" aria-labelledby="venue-h" data-ground="dark">
+    <div class="wrap">
+      <div class="section__head reveal">
+        <span class="eyebrow" data-i18n="venue-eyebrow">Mekân</span>
+        <h2 id="venue-h" data-i18n="venue-h">Taşın, dumanın ve külün arasında</h2>
+      </div>
+      <div class="venue">
+        <div class="media venue__item--hall reveal" role="img" data-i18n-aria-label="venue-hall-alt" style="background-image:var(--img-hall);background-position:center 30%"></div>
+        <div class="media venue__item--corridor reveal" role="img" data-i18n-aria-label="venue-corridor-alt" style="background-image:var(--img-corridor);background-position:center 25%"></div>
+        <div class="media venue__item--private reveal" role="img" data-i18n-aria-label="venue-private-alt" style="background-image:var(--img-private);background-position:center 40%"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================== ŞEF ============================== -->
+  <section class="section section--washi" id="sef" aria-labelledby="chef-h" data-ground="light">
+    <div class="wrap chef">
+      <div class="media chef__media reveal" role="img" data-i18n-aria-label="chef-photo-alt" style="background-image:var(--img-chef)"></div>
+      <div class="reveal">
+        <span class="eyebrow" data-i18n="chef-eyebrow">Şef</span>
+        <h2 id="chef-h" class="section__head" style="margin-bottom:0" data-i18n="chef-name">Ren Takahashi</h2>
+        <p data-i18n="chef-p1">Ren, Osaka'daki bir robata ocağında ustalaştı; ateşin sıcaklığını gözle değil elle ölçmeyi orada öğrendi. Kumo'da her akşam aynı kurala bağlı kalıyor: balık ne kadar tazeyse, üzerindeki iş o kadar az olmalı.</p>
+        <p data-i18n="chef-p2">On iki yıldır mutfakta, son beşi kendi ocağının başında.</p>
+        <span class="chef__name">Ren Takahashi<span class="chef__role" data-i18n="chef-role">Executive Chef</span></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================== REZERVASYON ============================== -->
+  <section class="section section--washi" id="rezervasyon" aria-labelledby="reserve-h" data-ground="light">
+    <div class="wrap reserve">
+      <div class="reserve__info reveal">
+        <span class="eyebrow" data-i18n="reserve-eyebrow">Rezervasyon</span>
+        <h2 id="reserve-h" class="section__head" style="margin-bottom:var(--sp-7)" data-i18n="reserve-h">Bir masa ayırtın</h2>
+
+        <div class="reserve__block">
+          <span class="reserve__label" data-i18n="reserve-address-label">Adres</span>
+          <p class="reserve__value" data-i18n="reserve-address-value">Bulut Sokak No. 7<br>Beşiktaş, İstanbul</p>
+          <p style="margin-top:var(--sp-4)">
+            <a class="text-link" href="https://maps.google.com/?q=Kumo+Izakaya+Istanbul" target="_blank" rel="noopener" data-i18n="reserve-map-link">Haritada aç</a>
+          </p>
+        </div>
+
+        <div class="reserve__block">
+          <span class="reserve__label" data-i18n="reserve-contact-label">İletişim</span>
+          <p class="reserve__value">
+            <a class="text-link" href="tel:+902120000000">+90 212 000 00 00</a><br>
+            <a class="text-link" href="mailto:masa@kumoizakaya.example" style="margin-top:var(--sp-2);display:inline-block">masa@kumoizakaya.example</a>
+          </p>
+        </div>
+
+        <div class="reserve__block">
+          <span class="reserve__label" data-i18n="reserve-hours-label">Çalışma Saatleri</span>
+          <dl>
+            <dt data-i18n="reserve-hours-days1">Salı – Cumartesi</dt>
+            <dd>18:00 – 00:00</dd>
+            <dt data-i18n="reserve-hours-days2">Pazar, Pazartesi</dt>
+            <dd data-i18n="reserve-hours-closed">Kapalı</dd>
+          </dl>
+        </div>
+      </div>
+
+      <div class="reserve__cta reveal">
+        <iframe class="reserve__map" src="https://maps.google.com/maps?q=Bulut%20Sokak%20No.%207%2C%20Be%C5%9Fikta%C5%9F%2C%20%C4%B0stanbul&t=&z=15&ie=UTF8&iwloc=&output=embed" title="Kumo Izakaya harita" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+        <p data-i18n="reserve-cta-body">Ocak her akşam ısınıyor. Bir masa bırakalım.</p>
+        <button class="btn-pill" type="button" data-open-reserve data-i18n="nav-reserve">Masa ayırt</button>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ============================== REZERVASYON POPUP ============================== -->
+<dialog class="reserve-dialog" id="reserve-dialog" aria-labelledby="reserve-dialog-h">
+  <button class="reserve-dialog__close" type="button" data-close-reserve aria-label="Kapat" data-i18n-aria-label="dialog-close">&times;</button>
+  <div class="reserve-dialog__inner">
+
+    <div class="form-error-summary" id="form-error-summary" role="alert" tabindex="-1">
+      <h3 id="form-error-title" data-i18n="form-error-title">Bir sorun var</h3>
+      <ul id="form-error-list"></ul>
+    </div>
+
+    <form class="reserve-form" id="reserve-form" novalidate>
+      <h2 id="reserve-dialog-h" data-i18n="reserve-h">Bir masa ayırtın</h2>
+
+      <div class="field-row">
+        <div class="field" id="field-date">
+          <label for="r-date" data-i18n="form-date">Tarih</label>
+          <input type="date" id="r-date" name="date" required aria-describedby="err-date">
+          <p class="field__error" id="err-date" data-i18n="form-date-error">Lütfen bir tarih seçin.</p>
+        </div>
+        <div class="field" id="field-time">
+          <label for="r-time" data-i18n="form-time">Saat</label>
+          <select id="r-time" name="time" required aria-describedby="err-time">
+            <option value="" disabled selected data-i18n="form-select">Seçin</option>
+            <option>18:00</option>
+            <option>18:30</option>
+            <option>19:00</option>
+            <option>19:30</option>
+            <option>20:00</option>
+            <option>21:00</option>
+            <option>22:00</option>
+          </select>
+          <p class="field__error" id="err-time" data-i18n="form-time-error">Lütfen bir saat seçin.</p>
+        </div>
+      </div>
+
+      <div class="field" id="field-party">
+        <label for="r-party" data-i18n="form-party">Kişi sayısı</label>
+        <select id="r-party" name="party" required aria-describedby="err-party">
+          <option value="" disabled selected data-i18n="form-select">Seçin</option>
+          <option data-i18n="form-guests-1">1 kişi</option>
+          <option data-i18n="form-guests-2">2 kişi</option>
+          <option data-i18n="form-guests-3">3 kişi</option>
+          <option data-i18n="form-guests-4">4 kişi</option>
+          <option data-i18n="form-guests-5">5 kişi</option>
+          <option data-i18n="form-guests-6">6 kişi</option>
+          <option data-i18n="form-guests-more">7 veya daha fazla (bizi arayın)</option>
+        </select>
+        <p class="field__error" id="err-party" data-i18n="form-party-error">Lütfen kişi sayısını seçin.</p>
+      </div>
+
+      <div class="field" id="field-name">
+        <label for="r-name" data-i18n="form-name">Ad soyad</label>
+        <input type="text" id="r-name" name="name" autocomplete="name" required aria-describedby="err-name">
+        <p class="field__error" id="err-name" data-i18n="form-name-error">Lütfen adınızı girin.</p>
+      </div>
+
+      <div class="field" id="field-phone">
+        <label for="r-phone" data-i18n="form-phone">Telefon</label>
+        <input type="tel" id="r-phone" name="phone" autocomplete="tel" inputmode="tel" required aria-describedby="err-phone" placeholder="+90 5XX XXX XX XX">
+        <p class="field__error" id="err-phone" data-i18n="form-phone-error">Lütfen bir telefon numarası girin.</p>
+      </div>
+
+      <div class="field" id="field-email">
+        <label for="r-email"><span data-i18n="form-email">E-posta</span> <span data-i18n="form-optional">(opsiyonel)</span></label>
+        <input type="email" id="r-email" name="email" autocomplete="email" aria-describedby="err-email">
+        <p class="field__error" id="err-email" data-i18n="form-email-error">Lütfen geçerli bir e-posta girin.</p>
+      </div>
+
+      <div class="field-check">
+        <input type="checkbox" id="r-private" name="private">
+        <label for="r-private" data-i18n="form-private">Özel oda talep ediyorum</label>
+      </div>
+
+      <div class="field" id="field-note">
+        <label for="r-note"><span data-i18n="form-note">Not</span> <span data-i18n="form-optional">(opsiyonel)</span></label>
+        <textarea id="r-note" name="note" rows="3"></textarea>
+      </div>
+
+      <button class="reserve-form__submit" type="submit" data-i18n="form-submit">Talep gönder</button>
+    </form>
+
+    <div id="reserve-confirm" class="reserve-confirm" hidden>
+      <div class="reserve-confirm__mark" aria-hidden="true">&#10003;</div>
+      <h2 tabindex="-1" id="reserve-confirm-h" data-i18n="confirm-title">Talebiniz alındı</h2>
+      <p style="margin-top:var(--sp-3)"><span data-i18n="confirm-body-1">Sizin için not aldık:</span> <strong id="reserve-confirm-details"></strong>. <span data-i18n="confirm-body-2">Ekibimiz sizi arayarak onaylayacak.</span></p>
+      <p class="reserve-confirm__note" data-i18n="confirm-note">Bu bir tasarım önizlemesidir — hiçbir talep gerçekten gönderilmedi.</p>
+    </div>
+  </div>
+</dialog>
+
+<footer class="footer" data-ground="dark">
+  <span class="footer__mark">Kumo Izakaya</span>
+  <span data-i18n="footer-location">İstanbul, Türkiye</span>
+  <span data-i18n="footer-copyright">© 2026 Kumo Izakaya. Tüm hakları saklıdır.</span>
+</footer>
+
+<script src="js/i18n.js" defer></script>
+<script src="js/main.js" defer></script>
+</body>
+</html>

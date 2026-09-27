@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+# PLACEHOLDER: gerçek alan adı belli olunca bu satırı güncelleyin.
+Sitemap: https://kumoizakaya.com/sitemap.xml

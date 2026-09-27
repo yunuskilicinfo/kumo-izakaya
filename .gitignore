@@ -1,0 +1,11 @@
+# Local Claude Code tooling — not part of the deployed site
+.claude/skills/
+
+# Raw pasted-image dumps left at project root by the chat tool
+# (already copied into assets/img/ under meaningful names)
+/[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]*.jpg
+/[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]*.webp
+
+# OS cruft
+.DS_Store
+Thumbs.db

@@ -1,0 +1,377 @@
+/* ==========================================================================
+   KUMO IZAKAYA — Components
+   ========================================================================== */
+
+/* ---------------------------------------------------------------------
+   Top bar — thin, tracked nav fixed above everything (Hiden reference).
+   Contrast flips between washi and sumi sections (see js/main.js).
+   --------------------------------------------------------------------- */
+.topbar{
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 100;
+  height: var(--nav-h);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--gutter);
+  background: transparent;
+}
+.topbar__mark{
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  letter-spacing: .04em;
+  text-decoration: none;
+  color: var(--washi);
+}
+.topbar[data-on-light="true"] .topbar__mark{ color: var(--sumi-text); }
+
+.topbar__nav{
+  display: flex;
+  align-items: center;
+  gap: var(--sp-6);
+}
+.topbar__link{
+  text-decoration: none;
+  color: var(--washi);
+  font-size: var(--step-label);
+  letter-spacing: var(--track-nav);
+  text-transform: uppercase;
+}
+.topbar[data-on-light="true"] .topbar__link{ color: var(--sumi-text); }
+.topbar__link:hover{ color: var(--kin); }
+
+.lang-switch{
+  display: inline-flex;
+  align-items: center;
+  gap: .35em;
+  font-size: var(--step-label);
+  letter-spacing: var(--track-nav);
+}
+.lang-switch button{
+  all: unset;
+  cursor: pointer;
+  color: var(--ash);
+}
+.topbar[data-on-light="true"] .lang-switch button{ color: rgba(36,28,23,.55); }
+.lang-switch button[aria-pressed="true"]{ color: var(--kin); }
+.lang-switch span{ color: var(--ash); }
+.topbar[data-on-light="true"] .lang-switch span{ color: rgba(36,28,23,.4); }
+
+.btn-pill{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 2.6rem;
+  padding: 0 var(--sp-6);
+  border-radius: var(--radius-pill);
+  border: 1px solid currentColor;
+  background: transparent;
+  color: var(--washi);
+  font-size: var(--step-small);
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color .2s var(--ease), color .2s var(--ease);
+  white-space: nowrap;
+}
+.topbar[data-on-light="true"] .btn-pill{ color: var(--sumi-text); }
+.btn-pill:hover{
+  background: var(--momiji);
+  color: var(--washi);
+  border-color: var(--momiji);
+}
+
+.nav-toggle{
+  display: none;
+  all: unset;
+  cursor: pointer;
+  width: 2.5rem;
+  height: 2.5rem;
+  align-items: center;
+  justify-content: center;
+}
+.nav-toggle__bars{
+  width: 1.4rem;
+  height: 1px;
+  background: currentColor;
+  position: relative;
+}
+.nav-toggle__bars::before, .nav-toggle__bars::after{
+  content: "";
+  position: absolute;
+  left: 0; width: 100%; height: 1px;
+  background: currentColor;
+}
+.nav-toggle__bars::before{ top: -6px; }
+.nav-toggle__bars::after{ top: 6px; }
+
+@media (max-width: 860px){
+  .topbar__nav{
+    position: fixed;
+    inset: 0;
+    background: var(--sumi);
+    flex-direction: column;
+    justify-content: center;
+    gap: var(--sp-7);
+    transform: translateY(-100%);
+    transition: transform .3s var(--ease);
+  }
+  .topbar__nav[data-open="true"]{ transform: translateY(0); }
+  .topbar__nav .topbar__link{ color: var(--washi); font-size: var(--step-lead); }
+  .topbar__nav .btn-pill{ color: var(--washi); }
+  .topbar__nav .lang-switch{ font-size: var(--step-small); }
+  .topbar__nav .lang-switch button, .topbar__nav .lang-switch span{ color: var(--ash); }
+  .topbar__nav .lang-switch button[aria-pressed="true"]{ color: var(--kin); }
+  .nav-toggle{ display: inline-flex; color: var(--washi); position: relative; z-index: 101; }
+  .topbar[data-on-light="true"] .nav-toggle{ color: var(--sumi-text); }
+  html.nav-open .nav-toggle{ color: var(--washi); }
+}
+
+/* ---------------------------------------------------------------------
+   Media block — CSS-background "photo" (see tokens.css --img-*).
+   Deliberately not <img>: a missing src draws a broken-image icon and
+   several photo slots have no real photo yet.
+   --------------------------------------------------------------------- */
+.media{
+  background-size: cover;
+  background-position: center;
+  background-color: var(--sumi-deep);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+.media::after{
+  content: "";
+  display: block;
+  padding-top: var(--media-ratio, 75%);
+}
+
+/* ---------------------------------------------------------------------
+   Kanji ideogram + hanko seal — inline SVG, currentColor so they follow
+   ground contrast. Real geometric marks, not decorative clip-art.
+   --------------------------------------------------------------------- */
+.hero__seal{ color: var(--momiji); }
+.hero__seal svg, .story__motif svg{ display: block; width: 100%; height: 100%; }
+
+/* ---------------------------------------------------------------------
+   Story pull line
+   --------------------------------------------------------------------- */
+.pull-line{
+  font-family: var(--font-display);
+  font-size: var(--step-title);
+  line-height: 1.3;
+  color: var(--momiji-deep);
+  margin-top: var(--sp-6);
+}
+
+/* ---------------------------------------------------------------------
+   Reservation — a quiet CTA card on the page; the form itself lives in
+   a <dialog> popup (opened from any [data-open-reserve] trigger) so it
+   never sits as a long, heavy block in the page flow.
+   --------------------------------------------------------------------- */
+.reserve__cta{
+  background: var(--sumi);
+  color: var(--washi);
+  border-radius: var(--radius-sm);
+  padding: var(--sp-8) var(--sp-7);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--sp-6);
+}
+.reserve__cta p{ color: var(--ash); font-size: var(--step-lead); font-family: var(--font-display); line-height: var(--lh-body-serif); }
+.reserve__cta .btn-pill{ color: var(--washi); height: 3rem; padding-inline: var(--sp-8); }
+.reserve__cta .btn-pill:hover{ background: var(--kin); border-color: var(--kin); color: var(--sumi); }
+
+.reserve__map{
+  width: 100%;
+  height: 14rem;
+  border: 1px solid var(--rule-dark);
+  border-radius: var(--radius-sm);
+  filter: grayscale(.9) contrast(1.05) brightness(.92);
+}
+
+.reserve-dialog{
+  position: fixed;
+  inset: 0;
+  margin: auto;
+  border: none;
+  padding: 0;
+  background: var(--sumi);
+  color: var(--washi);
+  width: min(32rem, calc(100vw - 2.5rem));
+  height: fit-content;
+  max-height: min(44rem, 90vh);
+  border-radius: 6px;
+  box-shadow: 0 30px 80px -20px rgba(0,0,0,.55);
+}
+.reserve-dialog::backdrop{
+  background: var(--sumi-deep);
+  opacity: .78;
+  backdrop-filter: blur(3px);
+}
+.reserve-dialog[open]{ animation: dialog-in .32s var(--ease); }
+@keyframes dialog-in{
+  from{ opacity: 0; transform: translateY(10px) scale(.98); }
+  to{ opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: reduce){ .reserve-dialog[open]{ animation: none; } }
+
+.reserve-dialog__inner{
+  padding: var(--sp-7) var(--sp-6) var(--sp-6);
+  overflow-y: auto;
+  max-height: inherit;
+}
+.reserve-dialog__close{
+  position: absolute;
+  top: var(--sp-4);
+  right: var(--sp-4);
+  width: 2.25rem;
+  height: 2.25rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 1px solid var(--rule-dark);
+  background: transparent;
+  color: var(--washi);
+  cursor: pointer;
+  font-size: 1.1rem;
+  line-height: 1;
+}
+.reserve-dialog__close:hover{ background: var(--sumi-deep); }
+.reserve-dialog h2{ font-size: var(--step-title); margin-bottom: var(--sp-2); }
+
+/* ---------------------------------------------------------------------
+   Reservation form (lives inside the dialog above)
+   --------------------------------------------------------------------- */
+.reserve-form{
+  color: var(--washi);
+}
+.field{ margin-bottom: var(--sp-5); }
+.field label{
+  display: block;
+  font-size: var(--step-label);
+  letter-spacing: var(--track-label);
+  margin-bottom: var(--sp-2);
+  color: var(--ash);
+}
+.field input,
+.field select,
+.field textarea{
+  width: 100%;
+  min-height: 2.9rem;
+  padding: 0 var(--sp-4);
+  background: var(--sumi-deep);
+  border: 1px solid var(--rule-dark);
+  border-radius: var(--radius-sm);
+  color: var(--washi);
+  font-size: 1rem;
+}
+.field textarea{ padding-block: var(--sp-3); resize: vertical; min-height: 5rem; }
+.field input::placeholder, .field textarea::placeholder{ color: rgba(238,231,218,.35); }
+.field input:focus-visible,
+.field select:focus-visible,
+.field textarea:focus-visible{
+  outline: 2px solid var(--kin);
+  outline-offset: 2px;
+}
+.field--invalid input,
+.field--invalid select,
+.field--invalid textarea{
+  border-color: #C97A6A;
+}
+.field__error{
+  display: none;
+  margin-top: var(--sp-2);
+  font-size: var(--step-label);
+  color: #E0A296;
+}
+.field--invalid .field__error{ display: block; }
+
+.field-row{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--sp-4);
+}
+@media (max-width: 480px){
+  .field-row{ grid-template-columns: 1fr; }
+}
+
+.field-check{
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  margin-bottom: var(--sp-6);
+}
+.field-check input{
+  width: 1.25rem; height: 1.25rem;
+  min-height: 0;
+  accent-color: var(--momiji);
+}
+.field-check label{ margin: 0; font-size: var(--step-small); color: var(--washi); }
+
+.form-error-summary{
+  display: none;
+  background: rgba(224,162,150,.1);
+  border: 1px solid #C97A6A;
+  border-radius: var(--radius-sm);
+  padding: var(--sp-4) var(--sp-5);
+  margin-bottom: var(--sp-6);
+}
+.form-error-summary[data-show="true"]{ display: block; }
+.form-error-summary h3{
+  font-family: var(--font-body);
+  font-size: var(--step-small);
+  color: #E0A296;
+  margin-bottom: var(--sp-2);
+}
+.form-error-summary ul{ display: flex; flex-direction: column; gap: var(--sp-1); }
+.form-error-summary a{
+  color: #E0A296;
+  font-size: var(--step-small);
+  text-decoration: underline;
+}
+
+.reserve-form__submit{
+  width: 100%;
+  height: 3rem;
+  border-radius: var(--radius-pill);
+  border: none;
+  background: var(--momiji);
+  color: var(--washi);
+  font-size: var(--step-small);
+  cursor: pointer;
+  margin-top: var(--sp-2);
+  transition: background-color .2s var(--ease);
+}
+.reserve-form__submit:hover{ background: var(--momiji-deep); }
+.reserve-form__submit[disabled]{ opacity: .6; cursor: progress; }
+
+.reserve-confirm{ text-align: left; }
+.reserve-confirm__mark{
+  width: 2.75rem; height: 2.75rem;
+  border-radius: 50%;
+  border: 1px solid var(--kin);
+  color: var(--kin);
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: var(--sp-5);
+  font-size: 1.1rem;
+}
+.reserve-confirm__note{
+  margin-top: var(--sp-5);
+  padding-top: var(--sp-5);
+  border-top: var(--rail);
+  font-size: var(--step-label);
+  color: var(--ash);
+}
+
+.text-link{
+  display: inline-flex;
+  align-items: baseline;
+  gap: .4em;
+  color: inherit;
+  text-decoration: none;
+  border-bottom: 1px solid currentColor;
+  padding-bottom: .1em;
+}
+.text-link:hover{ opacity: .75; }
