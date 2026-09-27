@@ -5,6 +5,21 @@
    states of the same fire — with one warm ember-brass accent.
    ========================================================================== */
 
+/* Shippori Mincho ve Zen Kaku Gothic New, Türkçeye özgü İ/ı/Ş/ş/Ğ/ğ
+   karakterlerini bozuk çiziyor (bu fontların Latin Extended-A eklentisi
+   hatalı). Bu 6 karakter için sistem fontuna düşür, geri kalan metin
+   aynı fontta kalmaya devam eder — görsel tasarım değişmez. */
+@font-face{
+  font-family:"TR Glyph Fix Display";
+  src:local("Georgia"), local("Times New Roman"), local("Times");
+  unicode-range:U+0130,U+0131,U+015E,U+015F,U+011E,U+011F;
+}
+@font-face{
+  font-family:"TR Glyph Fix Body";
+  src:local("Helvetica Neue"), local("Helvetica"), local("Arial");
+  unicode-range:U+0130,U+0131,U+015E,U+015F,U+011E,U+011F;
+}
+
 :root{
   /* ---- Color — ash and paper, the two states of the same fire ---- */
   --sumi:   #1B1A18;   /* spent charcoal — ground for dark sections */
@@ -26,8 +41,8 @@
      Shippori Mincho: headings, wordmark, dish names — a Japanese Mincho
      serif with matching kanji weight, not a generic Western display face.
      Zen Kaku Gothic New: body copy, labels, form fields. */
-  --font-display: "Shippori Mincho", "Hiragino Mincho ProN", Georgia, serif;
-  --font-body: "Zen Kaku Gothic New", "Hiragino Sans", "Helvetica Neue", Arial, sans-serif;
+  --font-display: "TR Glyph Fix Display", "Shippori Mincho", "Hiragino Mincho ProN", Georgia, serif;
+  --font-body: "TR Glyph Fix Body", "Zen Kaku Gothic New", "Hiragino Sans", "Helvetica Neue", Arial, sans-serif;
 
   /* ---- Type scale — 16px base, ratio 1.333 ---- */
   --wordmark: clamp(56px, 15vw, 168px);
