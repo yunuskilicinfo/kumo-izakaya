@@ -290,7 +290,10 @@ html.fonts-loaded .hero__seal{
     border-bottom: 2px solid transparent;
   }
   .menu-tab[aria-selected="true"]{ border-bottom-color: var(--momiji); }
-  .menu-photo{ position: static; order: -1; margin-bottom: var(--sp-6); aspect-ratio: 16 / 10; }
+  /* position: relative (not static/sticky) — still needs to stay the
+     containing block for .menu-photo__img's absolute-positioned layers,
+     or they escape to the viewport and the photo appears blank. */
+  .menu-photo{ position: relative; order: -1; margin-bottom: var(--sp-6); aspect-ratio: 16 / 10; }
 }
 
 /* ---------------------------------------------------------------------
