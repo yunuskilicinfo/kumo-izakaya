@@ -1,0 +1,109 @@
+/* ==========================================================================
+   KUMO IZAKAYA — ikincil sayfalar (iptal.html, kvkk.html, admin.html)
+   Ana sayfanın tokens/base/components dosyalarını kullanır; buradaki her şey
+   yalnızca bu sayfalara özgü kabuktur.
+   ========================================================================== */
+.page-body{
+  background: var(--washi);
+  color: var(--sumi-text);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+.page-head{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-4);
+  padding: var(--sp-4) var(--gutter);
+  background: var(--sumi);
+  color: var(--washi);
+}
+.page-head__mark{
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  letter-spacing: .06em;
+  text-decoration: none;
+}
+.page{
+  flex: 1;
+  width: 100%;
+  max-width: 40rem;
+  margin: 0 auto;
+  padding: var(--sp-8) var(--gutter) var(--sp-9);
+}
+.page h1{ font-size: var(--step-display); margin-bottom: var(--sp-5); }
+.page p{ max-width: none; }
+.page a{ color: var(--sumi-text); }
+.page-foot{
+  padding: var(--sp-5) var(--gutter);
+  border-top: 1px solid var(--rule-light);
+  font-size: var(--step-small);
+  color: var(--ash-on-light);
+}
+
+.card{
+  border: 1px solid var(--rule-light);
+  border-radius: 6px;
+  background: #fff;
+  padding: var(--sp-6);
+  margin-block: var(--sp-5);
+}
+.kv{
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--sp-3) var(--sp-5);
+  margin: 0;
+}
+.kv dt{ color: var(--ash-on-light); font-size: var(--step-small); }
+.kv dd{ margin: 0; text-align: right; }
+
+.btn-solid{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 2.9rem;
+  padding: 0 var(--sp-7);
+  border: none;
+  border-radius: var(--radius-pill);
+  background: var(--sumi);
+  color: var(--washi);
+  font-size: var(--step-small);
+  cursor: pointer;
+  text-decoration: none;
+}
+.btn-solid:hover{ background: var(--momiji-deep); }
+.btn-solid[disabled]{ opacity: .6; cursor: progress; }
+.btn-solid--quiet{
+  background: transparent;
+  color: var(--sumi-text);
+  border: 1px solid var(--rule-light);
+}
+.btn-solid--quiet:hover{ background: var(--washi-dim); }
+.page a.btn-solid{ color: var(--washi); }
+.page a.btn-solid--quiet{ color: var(--sumi-text); }
+
+.notice{
+  padding: var(--sp-4) var(--sp-5);
+  border-radius: 6px;
+  border: 1px solid var(--rule-light);
+  background: var(--washi-dim);
+}
+.notice--error{ border-color: #C97A6A; background: #F6E7E3; color: #6b2d22; }
+.notice--ok{ border-color: var(--kin); }
+
+.prose h2{
+  font-size: var(--step-title);
+  margin: var(--sp-7) 0 var(--sp-3);
+}
+.prose p, .prose li{ line-height: 1.7; }
+.prose ul{ padding-left: 1.25rem; }
+.prose .draft{
+  padding: var(--sp-3) var(--sp-4);
+  border-left: 3px solid var(--kin);
+  background: var(--washi-dim);
+  font-size: var(--step-small);
+}
+
+html[lang="tr"] [data-only="en"],
+html[lang="en"] [data-only="tr"]{ display: none; }

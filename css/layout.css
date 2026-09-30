@@ -41,32 +41,80 @@ section{
 }
 
 /* ---------------------------------------------------------------------
-   Hero — Hiden-style: full-bleed grayscale photo, wordmark centered
-   low, thin tracked nav fixed above it.
+   Hero — full-screen video, same grayscale treatment as the photo it
+   replaced. One screen tall: a still frame until the first scroll, then
+   js/hero-video.js plays it on a loop while the page scrolls on
+   normally. Under prefers-reduced-motion it never plays.
    --------------------------------------------------------------------- */
 .hero{
   position: relative;
-  min-height: 100vh;
-  min-height: 100svh;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  overflow: clip;
   background: var(--sumi);
 }
-.hero__photo{
+.hero__sticky{
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  height: 100svh;
+  overflow: hidden;
+}
+.hero__video{
   position: absolute;
   inset: 0;
-  background-image: var(--img-hero);
-  background-size: cover;
-  background-position: center;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
   filter: grayscale(1) contrast(1.05) brightness(.78);
+  pointer-events: none;
 }
+/* Sits over the video until the first frame is decoded, then fades. */
+.hero__loading{
+  position: absolute;
+  inset: 0;
+  background: var(--sumi);
+  opacity: 1;
+  transition: opacity .9s var(--ease);
+  pointer-events: none;
+}
+.hero.is-ready .hero__loading{ opacity: 0; }
 .hero__scrim{
   position: absolute;
   inset: 0;
   background: linear-gradient(0deg, rgba(16,12,10,.86) 0%, rgba(16,12,10,.28) 46%, rgba(16,12,10,.5) 100%);
   pointer-events: none;
+}
+.hero__overlay{
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+.hero__hint{
+  position: absolute;
+  left: var(--gutter);
+  bottom: var(--sp-5);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--sp-2);
+  font-size: .75rem;
+  letter-spacing: .28em;
+  text-transform: uppercase;
+  color: var(--ash);
+  pointer-events: none;
+  transition: opacity .6s var(--ease);
+}
+.hero.is-playing .hero__hint{ opacity: 0; }
+.hero__hint::after{
+  content: "";
+  width: 1px;
+  height: 2.25rem;
+  background: currentColor;
+  opacity: .6;
+}
+@media (prefers-reduced-motion: reduce){
+  .hero__hint{ display: none; }
 }
 .hero__content{
   position: relative;

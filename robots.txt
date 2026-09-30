@@ -1,5 +1,7 @@
 User-agent: *
 Allow: /
+Disallow: /admin.html
+Disallow: /iptal.html
 
 # PLACEHOLDER: gerçek alan adı belli olunca bu satırı güncelleyin.
 Sitemap: https://kumoizakaya.com/sitemap.xml

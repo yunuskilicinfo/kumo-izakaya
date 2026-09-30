@@ -404,3 +404,54 @@
   padding-bottom: .1em;
 }
 .text-link:hover{ opacity: .75; }
+
+/* ---------------------------------------------------------------------
+   Reservation: live availability, server errors, confirm code
+   --------------------------------------------------------------------- */
+.field__hint{
+  margin-top: var(--sp-2);
+  font-size: var(--step-label);
+  color: var(--ash);
+  min-height: 1em;
+}
+.field__hint:empty{ display: none; }
+.field__hint--block{ margin: calc(-1 * var(--sp-2)) 0 var(--sp-5); }
+.field__hint a{ color: var(--washi); }
+.field select:disabled{ opacity: .6; cursor: not-allowed; }
+.field select option:disabled{ color: var(--ash); }
+.field .field-check{ margin-bottom: 0; }
+.field .field-check label a{ color: var(--washi); }
+.field-check + .field__error{ margin-top: var(--sp-2); }
+.field-check{ align-items: flex-start; }
+.field-check input{ margin-top: .15rem; flex: none; }
+.field-check label{ line-height: 1.5; }
+
+.turnstile-box{ margin-bottom: var(--sp-5); min-height: 0; }
+.turnstile-box:empty{ display: none; }
+
+.form-server-error{
+  margin: 0 0 var(--sp-4);
+  padding: var(--sp-3) var(--sp-4);
+  border: 1px solid #C97A6A;
+  border-radius: var(--radius-sm);
+  background: rgba(224,162,150,.1);
+  color: #E0A296;
+  font-size: var(--step-small);
+}
+.form-server-error[hidden]{ display: none; }
+
+.reserve-confirm__code{
+  margin-top: var(--sp-5);
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-3);
+  font-size: var(--step-small);
+  color: var(--ash);
+}
+.reserve-confirm__code strong{
+  font-family: var(--font-display);
+  font-size: var(--step-title);
+  letter-spacing: .12em;
+  color: var(--kin);
+  font-weight: 500;
+}

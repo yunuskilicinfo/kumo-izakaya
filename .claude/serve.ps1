@@ -20,6 +20,7 @@ $mime = @{
   ".jpg"  = "image/jpeg"
   ".jpeg" = "image/jpeg"
   ".webp" = "image/webp"
+  ".mp4"  = "video/mp4"
   ".ico"  = "image/x-icon"
 }
 
@@ -45,16 +46,42 @@ while ($listener.IsListening) {
       if (-not $contentType) { $contentType = "application/octet-stream" }
       $bytes = [System.IO.File]::ReadAllBytes($filePath)
       $response.ContentType = $contentType
-      $response.ContentLength64 = $bytes.Length
-      $response.OutputStream.Write($bytes, 0, $bytes.Length)
+      $response.AddHeader("Accept-Ranges", "bytes")
+      $total = $bytes.Length
+      $rangeHeader = $request.Headers["Range"]
+      if ($rangeHeader -and $rangeHeader -match '^bytes=(\d*)-(\d*)$') {
+        # Video needs HTTP Range (206) — Safari refuses to play without it
+        # and every browser needs it to seek. Static hosts do this natively.
+        if ($matches[1] -eq "") {
+          $start = [Math]::Max(0, $total - [int64]$matches[2]); $end = $total - 1
+        } else {
+          $start = [int64]$matches[1]
+          if ($matches[2] -eq "") { $end = $total - 1 } else { $end = [Math]::Min([int64]$matches[2], $total - 1) }
+        }
+        if ($start -gt $end -or $start -ge $total) {
+          $response.StatusCode = 416
+          $response.AddHeader("Content-Range", "bytes */$total")
+        } else {
+          $len = $end - $start + 1
+          $response.StatusCode = 206
+          $response.AddHeader("Content-Range", "bytes $start-$end/$total")
+          $response.ContentLength64 = $len
+          $response.OutputStream.Write($bytes, [int]$start, [int]$len)
+        }
+      } else {
+        $response.ContentLength64 = $total
+        $response.OutputStream.Write($bytes, 0, $total)
+      }
     } else {
       $response.StatusCode = 404
       $notFound = [System.Text.Encoding]::UTF8.GetBytes("Not found: $path")
       $response.OutputStream.Write($notFound, 0, $notFound.Length)
     }
   } catch {
-    $response.StatusCode = 500
+    # A client aborting mid-transfer (video seeks do this constantly) can
+    # leave headers already sent; don't let that kill the server loop.
+    try { $response.StatusCode = 500 } catch {}
   } finally {
-    $response.OutputStream.Close()
+    try { $response.OutputStream.Close() } catch {}
   }
 }

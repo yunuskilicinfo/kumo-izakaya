@@ -258,7 +258,7 @@
       var lang = btn.getAttribute("data-lang");
       applyLang(lang);
       storeLang(lang);
-      refreshErrorSummary();
+      if (window.KumoReserve) window.KumoReserve.onLangChange();
     });
   });
 
@@ -283,6 +283,7 @@
     if (confirmEl) confirmEl.hidden = true;
     document.documentElement.classList.add("is-locked");
     dialog.showModal();
+    document.dispatchEvent(new Event("kumo:reserve-open"));
     var firstField = dialog.querySelector("input, select");
     if (firstField) firstField.focus();
   }
@@ -304,104 +305,6 @@
       var rect = box.getBoundingClientRect();
       var inside = evt.clientX >= rect.left && evt.clientX <= rect.right && evt.clientY >= rect.top && evt.clientY <= rect.bottom;
       if (!inside) closeReserveDialog();
-    });
-  }
-
-  /* -----------------------------------------------------------------
-     Reservation form. Blur validation, a focusable error summary on
-     failed submit, then a confirm panel.
-     ----------------------------------------------------------------- */
-  var form = document.getElementById("reserve-form");
-  var errorSummary = document.getElementById("form-error-summary");
-  var errorList = document.getElementById("form-error-list");
-  var confirmPanel = document.getElementById("reserve-confirm");
-  var confirmHeading = document.getElementById("reserve-confirm-h");
-  var confirmDetails = document.getElementById("reserve-confirm-details");
-
-  var dateField = document.getElementById("r-date");
-  if (dateField) {
-    var today = new Date();
-    var yyyy = today.getFullYear();
-    var mm = String(today.getMonth() + 1).padStart(2, "0");
-    var dd = String(today.getDate()).padStart(2, "0");
-    dateField.min = yyyy + "-" + mm + "-" + dd;
-  }
-
-  function fieldWrap(input) {
-    return input.closest(".field");
-  }
-
-  function validateField(input) {
-    var wrap = fieldWrap(input);
-    if (!wrap) return true;
-    var valid = input.checkValidity();
-    wrap.classList.toggle("field--invalid", !valid);
-    return valid;
-  }
-
-  var lastInvalidFields = [];
-
-  function renderErrorSummary(invalidFields) {
-    errorList.innerHTML = "";
-    invalidFields.forEach(function (input) {
-      var wrap = fieldWrap(input);
-      var label = wrap.querySelector("label");
-      var li = document.createElement("li");
-      var a = document.createElement("a");
-      a.href = "#" + input.id;
-      a.textContent = label ? label.textContent : input.name;
-      a.addEventListener("click", function (e) {
-        e.preventDefault();
-        input.focus();
-      });
-      li.appendChild(a);
-      errorList.appendChild(li);
-    });
-  }
-
-  // Re-run after a language switch: the labels just changed, and a summary
-  // built before that switch would otherwise be left showing stale text.
-  function refreshErrorSummary() {
-    if (errorSummary.getAttribute("data-show") === "true" && lastInvalidFields.length > 0) {
-      renderErrorSummary(lastInvalidFields);
-    }
-  }
-
-  if (form) {
-    var requiredFields = Array.prototype.slice.call(form.querySelectorAll("[required]"));
-
-    requiredFields.forEach(function (input) {
-      input.addEventListener("blur", function () { validateField(input); });
-      input.addEventListener("input", function () {
-        if (fieldWrap(input).classList.contains("field--invalid")) validateField(input);
-      });
-    });
-
-    form.addEventListener("submit", function (evt) {
-      evt.preventDefault();
-
-      var invalidFields = requiredFields.filter(function (input) { return !validateField(input); });
-      lastInvalidFields = invalidFields;
-
-      if (invalidFields.length > 0) {
-        renderErrorSummary(invalidFields);
-        errorSummary.setAttribute("data-show", "true");
-        errorSummary.focus();
-        return;
-      }
-
-      errorSummary.setAttribute("data-show", "false");
-
-      var lang = document.documentElement.lang === "en" ? "en" : "tr";
-      var party = document.getElementById("r-party").value;
-      var date = dateField.value;
-      var time = document.getElementById("r-time").value;
-      var joiner = lang === "en" ? " on " + date + " at " + time : date + " tarihinde, " + time + " için " + party.toLowerCase();
-      confirmDetails.textContent = lang === "en" ? party + joiner : joiner;
-
-      form.hidden = true;
-      confirmPanel.hidden = false;
-      confirmHeading.focus();
     });
   }
 })();

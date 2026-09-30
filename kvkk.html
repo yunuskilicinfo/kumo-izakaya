@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aydınlatma Metni — Kumo Izakaya</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500&family=Zen+Kaku+Gothic+New:wght@400;500&display=swap" media="print" onload="this.media='all'">
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/components.css">
+<link rel="stylesheet" href="css/pages.css">
+</head>
+<body class="page-body">
+<header class="page-head">
+  <a class="page-head__mark" href="index.html">Kumo Izakaya</a>
+  <div class="lang-switch" role="group" aria-label="Dil seçimi">
+    <button type="button" data-lang="tr" aria-pressed="true" aria-label="Türkçe">TR</button>
+    <span aria-hidden="true">/</span>
+    <button type="button" data-lang="en" aria-pressed="false" aria-label="English">EN</button>
+  </div>
+</header>
+
+<main class="page prose" id="main">
+
+  <!-- ============ TÜRKÇE ============ -->
+  <div data-only="tr">
+    <h1>Kişisel Verilerin Korunması — Aydınlatma Metni</h1>
+    <p class="draft">TASLAK — Bu metin yer tutucudur. Yayına almadan önce firma unvanı, adres ve iletişim bilgileri doldurulmalı ve metin bir hukukçu tarafından gözden geçirilmelidir.</p>
+
+    <h2>Veri sorumlusu</h2>
+    <p>[Firma unvanı], [adres]. İletişim: masa@kumoizakaya.example</p>
+
+    <h2>İşlenen veriler</h2>
+    <ul>
+      <li>Ad soyad, telefon numarası, e-posta adresi</li>
+      <li>Rezervasyon bilgileri (tarih, saat, kişi sayısı, alan tercihi) ve isteğe bağlı not</li>
+      <li>Güvenlik amacıyla kısaltılmış (özetlenmiş) IP bilgisi; ham IP adresi saklanmaz</li>
+    </ul>
+
+    <h2>Amaç ve hukuki sebep</h2>
+    <p>Verileriniz; rezervasyonunuzu oluşturmak, onaylamak, hatırlatmak, değişiklik veya iptal süreçlerini yürütmek ve sizinle bu konuda iletişim kurmak amacıyla işlenir. Hukuki sebep, bir sözleşmenin kurulması ve ifasıyla doğrudan ilgili olması (KVKK m. 5/2-c) ve rezervasyon formundaki açık rızanızdır. Otomatik e-postalar (onay, 24 saat kala hatırlatma, iptal) yalnızca rezervasyonunuza ilişkindir; pazarlama amacıyla kullanılmaz.</p>
+
+    <h2>Aktarım</h2>
+    <p>Verileriniz, hizmetin sunulması için şu hizmet sağlayıcılarla paylaşılır ve bu sağlayıcıların sunucuları yurt dışında bulunabilir: veritabanı ve sunucu altyapısı (Supabase, Frankfurt/AB), e-posta gönderimi (Resend), personel bildirimi (Telegram ve/veya WhatsApp), spam koruması (Cloudflare). Yurt dışına aktarım, açık rızanıza dayanır.</p>
+
+    <h2>Saklama süresi</h2>
+    <p>Rezervasyon kayıtları rezervasyon tarihinden itibaren 12 ay saklanır, ardından otomatik olarak silinir.</p>
+
+    <h2>Haklarınız</h2>
+    <p>KVKK m. 11 kapsamında; verilerinizin işlenip işlenmediğini öğrenme, bilgi talep etme, düzeltilmesini veya silinmesini isteme, işlemeye itiraz etme ve zarara uğramanız hâlinde tazminat talep etme haklarına sahipsiniz. Başvurularınızı yukarıdaki iletişim adresine iletebilirsiniz.</p>
+  </div>
+
+  <!-- ============ ENGLISH ============ -->
+  <div data-only="en">
+    <h1>Privacy Notice</h1>
+    <p class="draft">DRAFT — This text is a placeholder. Fill in the company name, address and contact details, and have it reviewed by a lawyer before going live.</p>
+
+    <h2>Data controller</h2>
+    <p>[Company name], [address]. Contact: masa@kumoizakaya.example</p>
+
+    <h2>Data we process</h2>
+    <ul>
+      <li>Name, phone number, email address</li>
+      <li>Reservation details (date, time, party size, area preference) and an optional note</li>
+      <li>A hashed form of your IP address for abuse protection; the raw IP address is not stored</li>
+    </ul>
+
+    <h2>Purpose and legal basis</h2>
+    <p>We use your data to create, confirm, remind you about, change or cancel your reservation, and to contact you about it. The legal basis is that it is necessary to set up and perform the booking (KVKK art. 5/2-c) and your explicit consent given on the reservation form. Automatic emails (confirmation, 24-hour reminder, cancellation) relate only to your booking and are never used for marketing.</p>
+
+    <h2>Recipients</h2>
+    <p>Your data is shared with the following providers to deliver the service, whose servers may be located abroad: database and server infrastructure (Supabase, Frankfurt/EU), email delivery (Resend), staff notifications (Telegram and/or WhatsApp), spam protection (Cloudflare). Transfers abroad rely on your explicit consent.</p>
+
+    <h2>Retention</h2>
+    <p>Reservation records are kept for 12 months after the reservation date and then deleted automatically.</p>
+
+    <h2>Your rights</h2>
+    <p>Under KVKK art. 11 you may ask whether your data is processed, request information, ask for correction or deletion, object to processing, and claim compensation for damage. Send requests to the contact address above.</p>
+  </div>
+
+  <p style="margin-top:var(--sp-7)"><a class="btn-solid btn-solid--quiet" href="index.html" data-i18n="cancel-back">Ana sayfaya dön</a></p>
+</main>
+
+<footer class="page-foot">© 2026 Kumo Izakaya</footer>
+
+<script src="js/i18n.js" defer></script>
+<script src="js/page.js" defer></script>
+</body>
+</html>

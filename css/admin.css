@@ -1,0 +1,124 @@
+/* ==========================================================================
+   KUMO IZAKAYA — yönetim paneli (admin.html)
+   ========================================================================== */
+.admin{
+  flex: 1;
+  width: 100%;
+  max-width: 64rem;
+  margin: 0 auto;
+  padding: var(--sp-6) var(--gutter) var(--sp-9);
+}
+.admin h1{ font-size: var(--step-title); margin-bottom: var(--sp-4); }
+.admin h2{ font-size: 1.15rem; margin: var(--sp-6) 0 var(--sp-3); }
+
+.admin-nav{ display: flex; flex-wrap: wrap; gap: var(--sp-2); }
+.admin-nav[hidden]{ display: none; }
+.admin-nav button{
+  all: unset;
+  cursor: pointer;
+  padding: var(--sp-2) var(--sp-4);
+  border-radius: var(--radius-pill);
+  font-size: var(--step-small);
+  color: var(--ash);
+}
+.admin-nav button:hover{ color: var(--washi); }
+.admin-nav button[aria-pressed="true"]{ background: var(--washi); color: var(--sumi-text); }
+.admin-nav button:focus-visible{ outline: 2px solid var(--kin); outline-offset: 2px; }
+
+.a-banner{
+  margin-bottom: var(--sp-4);
+  padding: var(--sp-3) var(--sp-4);
+  border-radius: 6px;
+  border: 1px solid var(--rule-light);
+  background: var(--washi-dim);
+  font-size: var(--step-small);
+}
+.a-banner--error{ border-color: #C97A6A; background: #F6E7E3; color: #6b2d22; }
+.a-banner--ok{ border-color: var(--kin); }
+
+/* form controls (light ground) */
+.a-field{ display: flex; flex-direction: column; gap: var(--sp-1); margin-bottom: var(--sp-4); min-width: 0; }
+.a-field label{ font-size: var(--step-label); color: var(--ash-on-light); letter-spacing: var(--track-label); }
+.a-field input, .a-field select, .a-field textarea{
+  min-height: 2.6rem;
+  padding: 0 var(--sp-3);
+  border: 1px solid var(--rule-light);
+  border-radius: 4px;
+  background: #fff;
+  color: var(--sumi-text);
+  font-size: 1rem;
+  width: 100%;
+}
+.a-field textarea{ padding-block: var(--sp-2); min-height: 4rem; }
+.a-row{ display: grid; grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr)); gap: var(--sp-3); }
+.a-check{ display: flex; align-items: center; gap: var(--sp-2); margin-bottom: var(--sp-4); font-size: var(--step-small); }
+.a-check input{ width: 1.1rem; height: 1.1rem; }
+
+.btn-sm{
+  all: unset;
+  cursor: pointer;
+  padding: .35rem .8rem;
+  border: 1px solid var(--rule-light);
+  border-radius: var(--radius-pill);
+  font-size: var(--step-label);
+  background: #fff;
+  color: var(--sumi-text);
+}
+.btn-sm:hover{ background: var(--washi-dim); }
+.btn-sm:focus-visible{ outline: 2px solid var(--kin); outline-offset: 2px; }
+.btn-sm--danger{ color: #8f3a2b; border-color: #C97A6A; }
+.btn-sm[disabled]{ opacity: .5; cursor: progress; }
+
+.a-bar{ display: flex; flex-wrap: wrap; align-items: center; gap: var(--sp-3); margin-bottom: var(--sp-5); }
+.a-bar input[type="date"]{ min-height: 2.4rem; padding: 0 var(--sp-3); border: 1px solid var(--rule-light); border-radius: 4px; background: #fff; }
+.a-day-title{ font-family: var(--font-display); font-size: 1.15rem; }
+
+/* occupancy grid */
+.a-load{ display: grid; grid-template-columns: 4rem 1fr 1fr; gap: var(--sp-2) var(--sp-4); align-items: center; font-size: var(--step-small); }
+.a-load__head{ color: var(--ash-on-light); font-size: var(--step-label); }
+.a-meter{ position: relative; height: 1.4rem; border-radius: 3px; background: var(--washi-dim); overflow: hidden; }
+.a-meter__fill{ position: absolute; inset: 0 auto 0 0; background: var(--kin); }
+.a-meter--full .a-meter__fill{ background: #B4573F; }
+.a-meter__text{ position: relative; padding-left: var(--sp-2); font-size: var(--step-label); line-height: 1.4rem; }
+
+/* reservation cards */
+.a-list{ display: flex; flex-direction: column; gap: var(--sp-3); }
+.a-res{
+  display: grid;
+  grid-template-columns: 4rem 1fr auto;
+  gap: var(--sp-2) var(--sp-4);
+  align-items: start;
+  padding: var(--sp-4);
+  border: 1px solid var(--rule-light);
+  border-radius: 6px;
+  background: #fff;
+}
+.a-res--off{ opacity: .55; }
+.a-res__time{ font-family: var(--font-display); font-size: 1.3rem; }
+.a-res__name{ font-weight: 500; }
+.a-res__meta{ font-size: var(--step-small); color: var(--ash-on-light); }
+.a-res__meta a{ color: inherit; }
+.a-res__note{ margin-top: var(--sp-1); font-size: var(--step-small); font-style: italic; }
+.a-res__actions{ display: flex; flex-wrap: wrap; gap: var(--sp-2); justify-content: flex-end; }
+.a-badge{
+  display: inline-block; padding: .1rem .55rem; border-radius: var(--radius-pill);
+  font-size: var(--step-label); background: var(--washi-dim); margin-left: var(--sp-2);
+}
+.a-badge--confirmed{ background: #E4EBDD; }
+.a-badge--cancelled{ background: #F1DDD8; }
+.a-empty{ color: var(--ash-on-light); padding: var(--sp-5) 0; }
+@media (max-width: 560px){
+  .a-res{ grid-template-columns: 3.5rem 1fr; }
+  .a-res__actions{ grid-column: 1 / -1; justify-content: flex-start; }
+}
+
+details.a-add{ margin-bottom: var(--sp-5); border: 1px solid var(--rule-light); border-radius: 6px; background: #fff; }
+details.a-add summary{ cursor: pointer; padding: var(--sp-3) var(--sp-4); font-size: var(--step-small); }
+details.a-add form{ padding: 0 var(--sp-4) var(--sp-4); }
+
+.a-hours{ width: 100%; border-collapse: collapse; font-size: var(--step-small); }
+.a-hours th, .a-hours td{ text-align: left; padding: var(--sp-2) var(--sp-2) var(--sp-2) 0; border-bottom: 1px solid var(--rule-light); }
+.a-hours input[type="time"]{ min-height: 2.2rem; border: 1px solid var(--rule-light); border-radius: 4px; padding: 0 var(--sp-2); background: #fff; }
+.a-hours input[type="time"]:disabled{ opacity: .4; }
+
+.a-login{ max-width: 24rem; margin: var(--sp-8) auto 0; }

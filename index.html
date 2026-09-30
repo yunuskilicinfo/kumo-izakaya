@@ -42,9 +42,6 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500&family=Zen+Kaku+Gothic+New:wght@400;500&display=swap" media="print" onload="this.media='all'">
 <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500&family=Zen+Kaku+Gothic+New:wght@400;500&display=swap"></noscript>
 
-<!-- Hero fotoğrafı LCP adayı: CSS'in indirilmesini beklemeden erkenden başlat. -->
-<link rel="preload" as="image" href="assets/img/kumo-hero.webp" fetchpriority="high">
-
 <link rel="stylesheet" href="css/tokens.css">
 <link rel="stylesheet" href="css/base.css">
 <link rel="stylesheet" href="css/layout.css">
@@ -189,18 +186,27 @@
 
   <!-- ============================== HERO ============================== -->
   <section class="hero" id="top" aria-label="Kumo Izakaya" data-ground="dark">
-    <div class="hero__photo" role="img" aria-label="Karanlık bir masanın üzerine sarkan kiraz çiçeği dalları, siyah-beyaz çekim" data-i18n-aria-label="hero-photo-alt"></div>
-    <div class="hero__scrim" aria-hidden="true"></div>
-    <div class="hero__content">
-      <div class="hero__kanji" aria-hidden="true">雲</div>
-      <h1 class="wordmark">Kumo Izakaya</h1>
-      <p class="hero__sub" data-i18n="hero-sub">Ateşin üstünde, bulutun altında bir sofra.</p>
-    </div>
-    <div class="hero__seal" aria-hidden="true">
-      <svg viewBox="0 0 100 100">
-        <rect x="4" y="4" width="92" height="92" rx="8" fill="currentColor"/>
-        <text x="50" y="68" text-anchor="middle" font-family="'Shippori Mincho', serif" font-size="56" fill="#F7F6F3">雲</text>
-      </svg>
+    <div class="hero__sticky">
+      <!-- Dekoratif arka plan videosu: ilk scroll'da oynamaya başlar ve loop'a girer.
+           Kaynak (masaüstü/mobil) js/hero-video.js içinde seçilir. -->
+      <video class="hero__video" muted loop playsinline preload="auto" aria-hidden="true" tabindex="-1"
+             data-src="assets/video/hero.mp4" data-src-mobile="assets/video/hero-mobile.mp4"></video>
+      <div class="hero__scrim" aria-hidden="true"></div>
+      <div class="hero__loading" aria-hidden="true"></div>
+      <div class="hero__overlay">
+        <div class="hero__content">
+          <div class="hero__kanji" aria-hidden="true">雲</div>
+          <h1 class="wordmark">Kumo Izakaya</h1>
+          <p class="hero__sub" data-i18n="hero-sub">Ateşin üstünde, bulutun altında bir sofra.</p>
+        </div>
+        <div class="hero__seal" aria-hidden="true">
+          <svg viewBox="0 0 100 100">
+            <rect x="4" y="4" width="92" height="92" rx="8" fill="currentColor"/>
+            <text x="50" y="68" text-anchor="middle" font-family="'Shippori Mincho', serif" font-size="56" fill="#F7F6F3">雲</text>
+          </svg>
+        </div>
+      </div>
+      <div class="hero__hint" aria-hidden="true"><span data-i18n="hero-scroll-hint">Kaydır</span></div>
     </div>
   </section>
 
@@ -481,73 +487,83 @@
           <input type="date" id="r-date" name="date" required aria-describedby="err-date">
           <p class="field__error" id="err-date" data-i18n="form-date-error">Lütfen bir tarih seçin.</p>
         </div>
-        <div class="field" id="field-time">
-          <label for="r-time" data-i18n="form-time">Saat</label>
-          <select id="r-time" name="time" required aria-describedby="err-time">
+        <div class="field" id="field-party">
+          <label for="r-party" data-i18n="form-party">Kişi sayısı</label>
+          <select id="r-party" name="party" required aria-describedby="err-party party-hint">
             <option value="" disabled selected data-i18n="form-select">Seçin</option>
-            <option>18:00</option>
-            <option>18:30</option>
-            <option>19:00</option>
-            <option>19:30</option>
-            <option>20:00</option>
-            <option>21:00</option>
-            <option>22:00</option>
+            <option value="1" data-i18n="form-guests-1">1 kişi</option>
+            <option value="2" data-i18n="form-guests-2">2 kişi</option>
+            <option value="3" data-i18n="form-guests-3">3 kişi</option>
+            <option value="4" data-i18n="form-guests-4">4 kişi</option>
+            <option value="5" data-i18n="form-guests-5">5 kişi</option>
+            <option value="6" data-i18n="form-guests-6">6 kişi</option>
+            <option value="7" data-i18n="form-guests-7">7 kişi (özel oda)</option>
+            <option value="8" data-i18n="form-guests-8">8 kişi (özel oda)</option>
+            <option value="more" data-i18n="form-guests-more">9 veya daha fazla (bizi arayın)</option>
           </select>
-          <p class="field__error" id="err-time" data-i18n="form-time-error">Lütfen bir saat seçin.</p>
+          <p class="field__error" id="err-party" data-i18n="form-party-error">Lütfen kişi sayısını seçin.</p>
         </div>
       </div>
-
-      <div class="field" id="field-party">
-        <label for="r-party" data-i18n="form-party">Kişi sayısı</label>
-        <select id="r-party" name="party" required aria-describedby="err-party">
-          <option value="" disabled selected data-i18n="form-select">Seçin</option>
-          <option data-i18n="form-guests-1">1 kişi</option>
-          <option data-i18n="form-guests-2">2 kişi</option>
-          <option data-i18n="form-guests-3">3 kişi</option>
-          <option data-i18n="form-guests-4">4 kişi</option>
-          <option data-i18n="form-guests-5">5 kişi</option>
-          <option data-i18n="form-guests-6">6 kişi</option>
-          <option data-i18n="form-guests-more">7 veya daha fazla (bizi arayın)</option>
-        </select>
-        <p class="field__error" id="err-party" data-i18n="form-party-error">Lütfen kişi sayısını seçin.</p>
-      </div>
-
-      <div class="field" id="field-name">
-        <label for="r-name" data-i18n="form-name">Ad soyad</label>
-        <input type="text" id="r-name" name="name" autocomplete="name" required aria-describedby="err-name">
-        <p class="field__error" id="err-name" data-i18n="form-name-error">Lütfen adınızı girin.</p>
-      </div>
-
-      <div class="field" id="field-phone">
-        <label for="r-phone" data-i18n="form-phone">Telefon</label>
-        <input type="tel" id="r-phone" name="phone" autocomplete="tel" inputmode="tel" required aria-describedby="err-phone" placeholder="+90 5XX XXX XX XX">
-        <p class="field__error" id="err-phone" data-i18n="form-phone-error">Lütfen bir telefon numarası girin.</p>
-      </div>
-
-      <div class="field" id="field-email">
-        <label for="r-email"><span data-i18n="form-email">E-posta</span> <span data-i18n="form-optional">(opsiyonel)</span></label>
-        <input type="email" id="r-email" name="email" autocomplete="email" aria-describedby="err-email">
-        <p class="field__error" id="err-email" data-i18n="form-email-error">Lütfen geçerli bir e-posta girin.</p>
-      </div>
+      <p class="field__hint field__hint--block" id="party-hint" aria-live="polite" hidden></p>
 
       <div class="field-check">
         <input type="checkbox" id="r-private" name="private">
         <label for="r-private" data-i18n="form-private">Özel oda talep ediyorum</label>
       </div>
 
-      <div class="field" id="field-note">
-        <label for="r-note"><span data-i18n="form-note">Not</span> <span data-i18n="form-optional">(opsiyonel)</span></label>
-        <textarea id="r-note" name="note" rows="3"></textarea>
+      <div class="field" id="field-time">
+        <label for="r-time" data-i18n="form-time">Saat</label>
+        <select id="r-time" name="time" required disabled aria-describedby="err-time time-hint">
+          <option value="" disabled selected data-i18n="form-time-first">Önce tarih ve kişi sayısı seçin</option>
+        </select>
+        <p class="field__hint" id="time-hint" aria-live="polite"></p>
+        <p class="field__error" id="err-time" data-i18n="form-time-error">Lütfen bir saat seçin.</p>
       </div>
 
-      <button class="reserve-form__submit" type="submit" data-i18n="form-submit">Talep gönder</button>
+      <div class="field" id="field-name">
+        <label for="r-name" data-i18n="form-name">Ad soyad</label>
+        <input type="text" id="r-name" name="name" autocomplete="name" required maxlength="100" aria-describedby="err-name">
+        <p class="field__error" id="err-name" data-i18n="form-name-error">Lütfen adınızı girin.</p>
+      </div>
+
+      <div class="field" id="field-phone">
+        <label for="r-phone" data-i18n="form-phone">Telefon</label>
+        <input type="tel" id="r-phone" name="phone" autocomplete="tel" inputmode="tel" required minlength="7" maxlength="30" aria-describedby="err-phone" placeholder="+90 5XX XXX XX XX">
+        <p class="field__error" id="err-phone" data-i18n="form-phone-error">Lütfen geçerli bir telefon numarası girin.</p>
+      </div>
+
+      <div class="field" id="field-email">
+        <label for="r-email" data-i18n="form-email">E-posta</label>
+        <input type="email" id="r-email" name="email" autocomplete="email" required maxlength="200" aria-describedby="err-email">
+        <p class="field__error" id="err-email" data-i18n="form-email-error">Onay e-postası için geçerli bir adres girin.</p>
+      </div>
+
+      <div class="field" id="field-note">
+        <label for="r-note"><span data-i18n="form-note">Not</span> <span data-i18n="form-optional">(opsiyonel)</span></label>
+        <textarea id="r-note" name="note" rows="3" maxlength="500"></textarea>
+      </div>
+
+      <div class="field" id="field-consent">
+        <div class="field-check">
+          <input type="checkbox" id="r-consent" name="consent" required aria-describedby="err-consent">
+          <label for="r-consent"><span data-i18n="form-consent">Kişisel verilerimin rezervasyon amacıyla işlenmesini kabul ediyorum.</span> <a href="kvkk.html" target="_blank" rel="noopener" data-i18n="form-consent-link">Aydınlatma Metni</a></label>
+        </div>
+        <p class="field__error" id="err-consent" data-i18n="form-consent-error">Devam etmek için onay vermeniz gerekiyor.</p>
+      </div>
+
+      <div class="turnstile-box" id="turnstile-box"></div>
+
+      <p class="form-server-error" id="form-server-error" role="alert" hidden></p>
+
+      <button class="reserve-form__submit" id="reserve-submit" type="submit" data-i18n="form-submit">Masayı ayırt</button>
     </form>
 
     <div id="reserve-confirm" class="reserve-confirm" hidden>
       <div class="reserve-confirm__mark" aria-hidden="true">&#10003;</div>
-      <h2 tabindex="-1" id="reserve-confirm-h" data-i18n="confirm-title">Talebiniz alındı</h2>
-      <p style="margin-top:var(--sp-3)"><span data-i18n="confirm-body-1">Sizin için not aldık:</span> <strong id="reserve-confirm-details"></strong>. <span data-i18n="confirm-body-2">Ekibimiz sizi arayarak onaylayacak.</span></p>
-      <p class="reserve-confirm__note" data-i18n="confirm-note">Bu bir tasarım önizlemesidir — hiçbir talep gerçekten gönderilmedi.</p>
+      <h2 tabindex="-1" id="reserve-confirm-h" data-i18n="confirm-title">Rezervasyonunuz onaylandı</h2>
+      <p style="margin-top:var(--sp-3)"><span data-i18n="confirm-body-1">Masanız ayrıldı:</span> <strong id="reserve-confirm-details"></strong>. <span data-i18n="confirm-body-2">Onay e-postası adresinize gönderildi.</span></p>
+      <p class="reserve-confirm__code"><span data-i18n="confirm-code">Rezervasyon kodu</span> <strong id="reserve-confirm-code"></strong></p>
+      <p class="reserve-confirm__note" data-i18n="confirm-note">Planınız değişirse e-postadaki bağlantıdan iptal edebilirsiniz. E-posta gelmediyse spam klasörüne bakın.</p>
     </div>
   </div>
 </dialog>
@@ -558,7 +574,10 @@
   <span data-i18n="footer-copyright">© 2026 Kumo Izakaya. Tüm hakları saklıdır.</span>
 </footer>
 
+<script src="js/hero-video.js" defer></script>
+<script src="js/config.js" defer></script>
 <script src="js/i18n.js" defer></script>
 <script src="js/main.js" defer></script>
+<script src="js/reserve.js" defer></script>
 </body>
 </html>

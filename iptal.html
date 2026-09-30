@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<title>Rezervasyonu iptal et — Kumo Izakaya</title>
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500&family=Zen+Kaku+Gothic+New:wght@400;500&display=swap" media="print" onload="this.media='all'">
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/components.css">
+<link rel="stylesheet" href="css/pages.css">
+</head>
+<body class="page-body">
+<header class="page-head">
+  <a class="page-head__mark" href="index.html">Kumo Izakaya</a>
+  <div class="lang-switch" role="group" aria-label="Dil seçimi">
+    <button type="button" data-lang="tr" aria-pressed="true" aria-label="Türkçe">TR</button>
+    <span aria-hidden="true">/</span>
+    <button type="button" data-lang="en" aria-pressed="false" aria-label="English">EN</button>
+  </div>
+</header>
+
+<main class="page" id="main">
+  <h1 data-i18n="cancel-title">Rezervasyonu iptal et</h1>
+
+  <p id="c-status" role="status" data-i18n="cancel-loading">Rezervasyon bulunuyor…</p>
+
+  <div id="c-details" hidden>
+    <div class="card">
+      <dl class="kv">
+        <dt data-i18n="confirm-code">Rezervasyon kodu</dt><dd id="c-code"></dd>
+        <dt data-i18n="cancel-when">Tarih ve saat</dt><dd id="c-when"></dd>
+        <dt data-i18n="cancel-party">Kişi sayısı</dt><dd id="c-party"></dd>
+        <dt data-i18n="cancel-area">Alan</dt><dd id="c-area"></dd>
+      </dl>
+    </div>
+    <button class="btn-solid" id="c-confirm" type="button" data-i18n="cancel-confirm">Rezervasyonu iptal et</button>
+  </div>
+
+  <div id="c-result" class="notice" role="alert" hidden></div>
+
+  <p style="margin-top:var(--sp-7)">
+    <a class="btn-solid btn-solid--quiet" href="index.html" data-i18n="cancel-back">Ana sayfaya dön</a>
+  </p>
+  <p style="margin-top:var(--sp-5);font-size:var(--step-small)"><span data-i18n="cancel-need-help">Yardım için:</span> <a href="tel:+902120000000">+90 212 000 00 00</a></p>
+</main>
+
+<footer class="page-foot">© 2026 Kumo Izakaya</footer>
+
+<script src="js/config.js" defer></script>
+<script src="js/i18n.js" defer></script>
+<script src="js/page.js" defer></script>
+<script src="js/cancel.js" defer></script>
+</body>
+</html>
