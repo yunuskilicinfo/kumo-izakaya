@@ -1,5 +1,5 @@
 // Kumo Izakaya — rezervasyon API'si (Supabase Edge Function).
-// Rotalar (son path parçası): availability · reserve · cancel · admin · reminders
+// Rotalar (son path parçası): availability · reserve · cancel · admin · reminders · daily
 // Gizli anahtarlar Supabase → Edge Functions → Secrets'tan gelir (README'ye bakın).
 import { createClient } from "npm:@supabase/supabase-js@2";
 
@@ -117,17 +117,42 @@ async function sendMail(to: string | null | undefined, subject: string, html: st
     return res.ok;
   } catch (e) { console.error("resend", e); return false; }
 }
-async function notifyStaff(subject: string, lines: string[]) {
+async function sendTelegram(html: string, button?: { text: string; url: string }) {
+  const token = env("TELEGRAM_BOT_TOKEN"), chat = env("TELEGRAM_CHAT_ID");
+  if (!token || !chat) return false;
+  try {
+    const body: Record<string, unknown> = { chat_id: chat, text: html, parse_mode: "HTML", disable_web_page_preview: true };
+    if (button && /^https:\/\//.test(button.url)) body.reply_markup = { inline_keyboard: [[button]] };
+    const r = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+      method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body),
+    });
+    if (!r.ok) console.error("telegram", r.status, await r.text());
+    return r.ok;
+  } catch (e) { console.error("telegram", e); return false; }
+}
+function adminButton() {
+  const base = env("SITE_URL").replace(/\/$/, "");
+  return base ? { text: "Yönetim paneli", url: `${base}/admin.html` } : undefined;
+}
+function staffTelegram(title: string, r: Res) {
+  const w = when(r.starts_at, "tr");
+  return [
+    `<b>${title}</b>`,
+    `<b>${esc(r.code)}</b> · ${esc(w.date)} · <b>${esc(w.time)}</b>`,
+    `👥 ${r.party_size} kişi · ${L.tr[r.area === "private" ? "private" : "hall"]}`,
+    `👤 ${esc(r.name)}`,
+    ...(r.phone ? [`📞 <code>${esc(r.phone)}</code>`] : []),
+    ...(r.email ? [`✉️ ${esc(r.email)}`] : []),
+    ...(r.note ? [`📝 Not: ${esc(r.note)}`] : []),
+  ].join("\n");
+}
+async function notifyStaff(subject: string, r: Res) {
+  const lines = staffLines(r);
   const text = [subject, ...lines].join("\n");
   const jobs: Promise<unknown>[] = [];
   const to = env("RESTAURANT_EMAIL") || (await db.from("settings").select("restaurant_email").eq("id", 1).single()).data?.restaurant_email;
   jobs.push(sendMail(to, subject, `<pre style="font:15px/1.6 Helvetica,Arial,sans-serif">${esc(lines.join("\n"))}</pre>`));
-  if (env("TELEGRAM_BOT_TOKEN") && env("TELEGRAM_CHAT_ID")) {
-    jobs.push(fetch(`https://api.telegram.org/bot${env("TELEGRAM_BOT_TOKEN")}/sendMessage`, {
-      method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ chat_id: env("TELEGRAM_CHAT_ID"), text: esc(text), parse_mode: "HTML" }),
-    }).then(async (r) => { if (!r.ok) console.error("telegram", r.status, await r.text()); }));
-  }
+  jobs.push(sendTelegram(staffTelegram(esc(subject), r), adminButton()));
   if (env("WHATSAPP_TOKEN") && env("WHATSAPP_PHONE_ID") && env("WHATSAPP_TO")) {
     // İş başlatan mesajlar Meta'da onaylı bir şablon ister: gövdesinde tek {{1}} parametresi olan bir şablon.
     jobs.push(fetch(`https://graph.facebook.com/v20.0/${env("WHATSAPP_PHONE_ID")}/messages`, {
@@ -216,7 +241,7 @@ async function reserve(req: Request, cors: Record<string, string>, origin: strin
     const link = await cancelLink(r.id, origin);
     await Promise.allSettled([
       sendMail(email, L[lang].confirm.s, mailHtml(r, "confirm", link)),
-      notifyStaff("🍶 Yeni rezervasyon", staffLines(r)),
+      notifyStaff("🍶 Yeni rezervasyon", r),
     ]);
   })());
   return reply(cors, { ok: true, code: r.code, starts_at: r.starts_at, party_size: party, area });
@@ -237,7 +262,7 @@ async function cancel(req: Request, cors: Record<string, string>) {
   const r: Res = { ...data, lang: data.lang };
   background(Promise.allSettled([
     sendMail(r.email, L[r.lang === "en" ? "en" : "tr"].cancel.s, mailHtml(r, "cancel")),
-    notifyStaff("❌ Rezervasyon iptal (müşteri)", staffLines(r)),
+    notifyStaff("❌ Rezervasyon iptal (müşteri)", r),
   ]));
   return reply(cors, { ok: true, code: r.code });
 }
@@ -304,6 +329,35 @@ async function reminders(req: Request, cors: Record<string, string>) {
   return reply(cors, { claimed: data?.length ?? 0, sent });
 }
 
+async function daily(req: Request, cors: Record<string, string>) {
+  const secret = env("CRON_SECRET");
+  if (!secret) return reply(cors, { error: "not_configured" }, 503);
+  if (req.headers.get("x-cron-secret") !== secret) return reply(cors, { error: "forbidden" }, 403);
+  const today = new Intl.DateTimeFormat("sv-SE", { timeZone: TZ }).format(new Date()); // YYYY-MM-DD
+  const from = new Date(toStart(today, "00:00"));
+  const to = new Date(from.getTime() + 24 * 3600 * 1000);
+  const { data, error } = await db.from("reservations").select("code,starts_at,party_size,area,name")
+    .eq("status", "confirmed").gte("starts_at", from.toISOString()).lt("starts_at", to.toISOString()).order("starts_at");
+  if (error) { console.error(error); return reply(cors, { error: "server" }, 500); }
+  const rows = data ?? [];
+  if (!rows.length) return reply(cors, { count: 0, sent: false });
+  const guests = rows.reduce((n, r) => n + r.party_size, 0);
+  const hall = rows.filter((r) => r.area !== "private").reduce((n, r) => n + r.party_size, 0);
+  const head = [
+    `<b>📋 Bugün — ${esc(when(from.toISOString(), "tr").date)}</b>`,
+    `${rows.length} rezervasyon · ${guests} kişi (Salon ${hall} · Özel oda ${guests - hall})`,
+  ].join("\n");
+  const items = rows.map((r) => `${when(r.starts_at, "tr").time} · ${r.party_size} kişi · ${L.tr[r.area === "private" ? "private" : "hall"]} · ${esc(r.name)} · ${esc(r.code)}`);
+  let text = head, shown = 0;
+  for (const it of items) {
+    if ((text + "\n" + it).length > 3800) break;
+    text += "\n" + it; shown++;
+  }
+  if (shown < items.length) text += `\n+${items.length - shown} daha`;
+  const sent = await sendTelegram(text, adminButton());
+  return reply(cors, { count: rows.length, sent });
+}
+
 // ---------------------------------------------------------------- router
 Deno.serve(async (req) => {
   const { origin, h: cors } = corsFor(req);
@@ -315,6 +369,7 @@ Deno.serve(async (req) => {
     if (route === "cancel" && (req.method === "GET" || req.method === "POST")) return await cancel(req, cors);
     if (route === "admin" && req.method === "POST") return await admin(req, cors, origin);
     if (route === "reminders" && req.method === "POST") return await reminders(req, cors);
+    if (route === "daily" && req.method === "POST") return await daily(req, cors);
     return reply(cors, { error: "not_found" }, 404);
   } catch (e) {
     console.error(e);

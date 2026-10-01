@@ -96,6 +96,7 @@ Supabase Edge Function "booking"            Postgres (Europe/Istanbul saatiyle)
   /cancel       ── rpc ─►  cancel_reservation_by_token()
   /admin        (Supabase Auth JWT + admin_users kontrolü)
   /reminders    ◄─ pg_cron (15 dk'da bir, Vault'taki sırla)
+  /daily        ◄─ pg_cron (her sabah 10:00 İstanbul) → Telegram'a günlük özet
       ├─► Resend        müşteri + restoran e-postası
       ├─► Telegram Bot  personel bildirimi
       └─► WhatsApp API  (WHATSAPP_* secret'ları girilince açılır)
@@ -121,7 +122,7 @@ Kapasite mantığının tamamı tek yerde: `public.slot_status()` (`supabase/mig
 
 ```
 supabase/migrations/…_reservations.sql   tablolar, RLS, kapasite fonksiyonları, cron işleri
-supabase/functions/booking/index.ts      tüm API (availability · reserve · cancel · admin · reminders)
+supabase/functions/booking/index.ts      tüm API (availability · reserve · cancel · admin · reminders · daily)
 js/config.js       API adresi, Turnstile SITE key, admin girişi için publishable key (hepsi herkese açık değerler)
 js/reserve.js      form: canlı saat listesi, doğrulama, gönderim (metinler js/i18n.js'de)
 iptal.html + js/cancel.js   e-postadaki bağlantıyla iptal
@@ -140,9 +141,9 @@ Edge Function'ın gizli anahtarları **Supabase Dashboard → Edge Functions →
 | `RESEND_API_KEY` | resend.com → API Keys | e-postalar (onay, hatırlatma, iptal, restoran bildirimi) |
 | `RESTAURANT_EMAIL` | kendi adresiniz | yeni rezervasyon/iptal bildirimi (panelde Ayarlar'dan da girilebilir) |
 | `MAIL_FROM` | alan adı doğrulanınca, örn. `Kumo Izakaya <rezervasyon@alanadi.com>` | gönderen adresi. Boşsa `onboarding@resend.dev` (Resend **test modu: yalnızca kendi hesap adresinize** gönderir) |
-| `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID` | Telegram'da @BotFather → `/newbot`; botu personel grubuna ekleyip gruba bir mesaj yazın, sonra `https://api.telegram.org/bot<TOKEN>/getUpdates` içindeki `chat.id` | personele anlık mesaj |
+| `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID` | Telegram'da @BotFather → `/newbot`; botu açıp `/start` yazın (grup için: botu gruba ekleyip gruba bir mesaj yazın), sonra `https://api.telegram.org/bot<TOKEN>/getUpdates` içindeki `chat.id` | yeni rezervasyon / müşteri iptali anlık mesajı + sabah özeti. `SITE_URL` https ise mesajda "Yönetim paneli" butonu çıkar |
 | `TURNSTILE_SECRET` | Cloudflare → Turnstile → widget ekle (hostname: Vercel alan adınız + `localhost`) | spam koruması. **Site key**'i `js/config.js` → `turnstileSiteKey`'e yazın (şu an Cloudflare'in herkese açık test anahtarı var) |
-| `CRON_SECRET` | SQL Editor'da: `select decrypted_secret from vault.decrypted_secrets where name='cron_secret';` çıkan değeri aynen girin | 24 saat hatırlatma job'unun kimlik doğrulaması |
+| `CRON_SECRET` | SQL Editor'da: `select decrypted_secret from vault.decrypted_secrets where name='cron_secret';` çıkan değeri aynen girin | 24 saat hatırlatma ve günlük özet job'larının kimlik doğrulaması |
 | `SITE_URL` | sitenin adresi, örn. `https://kumo-izakaya.vercel.app` | e-postalardaki iptal bağlantısının kökü (yoksa isteğin geldiği adres kullanılır) |
 | `ALLOWED_ORIGINS` (opsiyonel) | virgülle ayrılmış ek adresler | CORS. `localhost` ve `kumo-izakaya*.vercel.app` zaten izinli |
 | `WHATSAPP_TOKEN`, `WHATSAPP_PHONE_ID`, `WHATSAPP_TO`, `WHATSAPP_TEMPLATE` | Meta Business → WhatsApp Cloud API; gövdesinde tek `{{1}}` parametresi olan, onaylı bir şablon | WhatsApp bildirimi (Meta onayı gerekir; şimdilik kapalı) |
