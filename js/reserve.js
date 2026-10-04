@@ -105,7 +105,7 @@
   /* ---- party size → private room rules ---- */
   function renderPartyHint() {
     if (state.partyMode === "call") {
-      partyHint.innerHTML = t("form-party-call") + ' <a class="text-link" href="tel:+902120000000">+90 212 000 00 00</a>';
+      partyHint.innerHTML = t("form-party-call") + ' <a class="text-link" href="tel:+905385470289">+90 538 547 02 89</a>';
     } else if (state.partyMode === "private") {
       partyHint.textContent = t("form-party-private");
     }

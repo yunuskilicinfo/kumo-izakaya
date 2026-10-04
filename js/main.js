@@ -259,6 +259,7 @@
       applyLang(lang);
       storeLang(lang);
       if (window.KumoReserve) window.KumoReserve.onLangChange();
+      if (window.KumoChat) window.KumoChat.onLangChange();
     });
   });
 
@@ -293,6 +294,7 @@
   }
 
   dialogOpeners.forEach(function (btn) { btn.addEventListener("click", openReserveDialog); });
+  window.KumoOpenReserve = openReserveDialog;
   dialogClosers.forEach(function (btn) { btn.addEventListener("click", closeReserveDialog); });
 
   if (dialog) {

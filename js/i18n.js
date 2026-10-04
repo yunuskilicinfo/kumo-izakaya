@@ -244,6 +244,36 @@ window.KUMO_I18N = {
   "cancel-back": { tr: "Ana sayfaya dön", en: "Back to the site" },
   "cancel-need-help": { tr: "Yardım için:", en: "Need help?" },
 
+  "chat-title": { tr: "Kumo Asistan", en: "Kumo Assistant" },
+  "chat-open": { tr: "Soru sor", en: "Ask a question" },
+  "chat-close": { tr: "Sohbeti kapat", en: "Close chat" },
+  "chat-placeholder": { tr: "Bir soru yazın…", en: "Type a question…" },
+  "chat-status-bot": { tr: "Yapay zekâ asistanı", en: "AI assistant" },
+  "chat-status-staff": { tr: "Personelle görüşüyorsunuz", en: "Talking with our staff" },
+  "chat-greeting": {
+    tr: "Merhaba, ben Kumo Asistan, yapay zekâ destekli bir asistanım. Menü, saatler, adres ve rezervasyon hakkında soru sorabilirsiniz. Yanıtlarım hatalı olabilir; alerji gibi önemli konularda personelimize bağlanın.",
+    en: "Hello, I'm Kumo Assistant, an AI-powered assistant. Ask me about the menu, opening hours, address or reservations. My answers can be wrong; for important matters such as allergies, please talk to our staff."
+  },
+  "chat-act-reserve": { tr: "Rezervasyon yap", en: "Make a reservation" },
+  "chat-act-handoff": { tr: "Personele bağlan", en: "Talk to staff" },
+  "chat-handoff-link": { tr: "Personelle konuşmak istiyorum", en: "I'd like to talk to staff" },
+  "chat-handoff-default": { tr: "Personelle görüşmek istiyorum.", en: "I'd like to speak with staff." },
+  "chat-consent": { tr: "Mesajlarım personele iletilsin ve 24 saat saklansın.", en: "Share my messages with staff and keep them for 24 hours." },
+  "chat-consent-link": { tr: "Aydınlatma metni", en: "Privacy notice" },
+  "chat-consent-go": { tr: "Personele bağlan", en: "Connect to staff" },
+  "chat-consent-cancel": { tr: "Vazgeç", en: "Cancel" },
+  "chat-handoff-started": {
+    tr: "Personele iletildi. Cevap bu pencereye düşer; sayfayı kapatırsanız aynı tarayıcıyla geri dönüp görebilirsiniz.",
+    en: "Sent to our staff. Their reply will appear in this window; if you close the page, come back with the same browser to see it."
+  },
+  "chat-handoff-closed": { tr: "Personel bu görüşmeyi kapattı.", en: "Our staff closed this conversation." },
+  "chat-handoff-gone": { tr: "Bu görüşmenin süresi doldu. Yeni bir soru sorabilirsiniz.", en: "This conversation has expired. You can ask a new question." },
+  "chat-err-rate": { tr: "Çok hızlı yazıyorsunuz, lütfen biraz bekleyin.", en: "You're typing too fast, please wait a moment." },
+  "chat-err-down": {
+    tr: "Şu an cevap veremiyorum. Lütfen bizi arayın: +90 538 547 02 89",
+    en: "I can't answer right now. Please call us: +90 538 547 02 89"
+  },
+
   "footer-location": { tr: "İstanbul, Türkiye", en: "Istanbul, Turkey" },
   "footer-copyright": { tr: "© 2026 Kumo Izakaya. Tüm hakları saklıdır.", en: "© 2026 Kumo Izakaya. All rights reserved." }
 };

@@ -8,6 +8,7 @@
    ========================================================================== */
 window.KUMO_CONFIG = {
   apiBase: "https://qcvcvbugvbpxyimeonuf.supabase.co/functions/v1/booking",
+  chatApiBase: "https://qcvcvbugvbpxyimeonuf.supabase.co/functions/v1/chat",
   turnstileSiteKey: "1x00000000000000000000AA",
   supabaseUrl: "https://qcvcvbugvbpxyimeonuf.supabase.co",
   supabaseKey: "sb_publishable_7PN2arFuDfP2evTRtip5RA_4la9d3r5"

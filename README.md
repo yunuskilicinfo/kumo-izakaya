@@ -166,6 +166,25 @@ Edge Function'ın gizli anahtarları **Supabase Dashboard → Edge Functions →
 - Personel bildirimi (Telegram/WhatsApp/e-posta) ve müşteri e-postaları en iyi çabayla gönderilir: gönderim başarısız olursa rezervasyon yine de kaydedilir, hata Edge Function loglarına düşer.
 - Hatırlatma yalnızca 24 saatten önce alınmış rezervasyonlar için gider (son dakika rezervasyonuna hatırlatma anlamsız).
 
+## Chatbot ("Kumo Asistan")
+
+Sağ alttaki balon, Claude Haiku 4.5 ile çalışan bir yapay zekâ asistanını açar (menü, fiyat, saat, adres, rezervasyon kuralları). Rezervasyonu kendisi yapmaz, mevcut forma yönlendirir. Alerjen/diyet sorularını **cevaplamaz**, personele devreder. Restoran dışı konuları reddeder.
+
+```
+index.html ── js/chat.js + css/chat.css
+   │ POST /message ─► Edge Function "chat" ─► Anthropic Messages API
+   │ POST /handoff · /send, GET /poll ─► chat_handoffs + chat_messages (24 saat) ─► Telegram bildirimi
+admin.html "Sohbetler" sekmesi ── RLS ile doğrudan okuma / personel cevabı yazma
+pg_cron "kumo-chat-cleanup" ── 24 saati geçen devirleri siler
+```
+
+- **Saklama:** Bot sohbeti sunucuda saklanmaz (sekmenin `sessionStorage`'ında kalır). Yalnızca müşteri KVKK onayıyla "Personele bağlan" derse sohbet 24 saat saklanır; müşteri aynı tarayıcıyla dönerse cevabı görür (token `localStorage`'da).
+- **Bilgi kaynağı:** `supabase/functions/chat/knowledge.ts` (menü, fiyat, adres, telefon, kurallar). Şimdilik sitedeki yer tutucu içerik; **gerçek bilgilerle güncelleyip `chat` fonksiyonunu yeniden deploy edin.** Açılış saatleri ve özel kapalı günler her istekte veritabanından okunur, panelden değişince bot da öğrenir.
+- **Secret:** Supabase → Edge Functions → Secrets → `ANTHROPIC_API_KEY` (console.anthropic.com → API Keys; Console'da aylık harcama limiti koymanız önerilir). Girilmezse bot "şu an cevap veremiyorum, bizi arayın" der. `TELEGRAM_*` ve `SITE_URL` rezervasyonla ortaktır.
+- **Hız sınırı:** IP başına dakikada 10 / günde 60 mesaj; saatte 3 devir; 10 dakikada 20 devir mesajı.
+- **Telefon numarası:** hata mesajındaki numara `js/i18n.js` → `chat-err-down` içindedir.
+- **Panel:** `admin.html#chats` — açık devirler, "Cevap bekliyor" rozeti, cevap yazma, görüşmeyi kapatma. Telegram bildirimindeki buton bu sekmeyi açar.
+
 ## Palet
 
 Renk paleti kül grisi ve neredeyse-beyaz kağıt arasında geçiş yapar (`--sumi`, `--washi`), tek bir sıcak vurgu olan pirinç/altın (`--kin`) ile. Önceki kırmızı lake/akçaağaç vurgusu (`--momiji`) kaldırıldı; aynı değişken adı korundu ama artık nötr bir kül grisi taşıyor, böylece onu kullanan yapısal öğeleri (aktif sekme çizgisi, rezervasyon butonu, checkbox) tek tek değiştirmek gerekmedi.

@@ -122,3 +122,22 @@ details.a-add form{ padding: 0 var(--sp-4) var(--sp-4); }
 .a-hours input[type="time"]:disabled{ opacity: .4; }
 
 .a-login{ max-width: 24rem; margin: var(--sp-8) auto 0; }
+
+/* chats */
+.a-chats{ display: grid; grid-template-columns: minmax(10rem, 16rem) 1fr; gap: var(--sp-5); align-items: start; }
+.a-chatrow{
+  display: flex; flex-wrap: wrap; gap: var(--sp-2); align-items: center; justify-content: space-between;
+  padding: var(--sp-3); border: 1px solid var(--rule-light); border-radius: 6px; background: #fff;
+  font: inherit; font-size: var(--step-small); text-align: left; cursor: pointer;
+}
+.a-chatrow.is-active{ border-color: var(--kin); }
+.a-chat{ display: flex; flex-direction: column; gap: var(--sp-3); }
+.a-chat[hidden]{ display: none; }
+.a-chat__msgs{ display: flex; flex-direction: column; gap: var(--sp-2); max-height: 28rem; overflow-y: auto; padding: var(--sp-3); border: 1px solid var(--rule-light); border-radius: 6px; background: #fff; }
+.a-chat__msg{ max-width: 85%; padding: var(--sp-2) var(--sp-3); border-radius: 8px; background: var(--washi-dim); font-size: var(--step-small); white-space: pre-wrap; overflow-wrap: anywhere; }
+.a-chat__msg--staff{ align-self: flex-end; background: #E4EBDD; }
+.a-chat__msg--bot{ opacity: .7; }
+.a-chat__who{ display: block; font-size: var(--step-label); color: var(--ash-on-light); margin-bottom: 2px; }
+.a-chat__form textarea{ width: 100%; padding: var(--sp-2) var(--sp-3); border: 1px solid var(--rule-light); border-radius: 4px; font: inherit; background: #fff; }
+.a-chat__actions{ display: flex; gap: var(--sp-2); margin-top: var(--sp-2); justify-content: space-between; }
+@media (max-width: 640px){ .a-chats{ grid-template-columns: 1fr; } }

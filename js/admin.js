@@ -30,7 +30,7 @@
     duplicate: "Aynı telefonla o gün için zaten bir rezervasyon var. “Kapasiteyi aş” ile yine de ekleyebilirsiniz."
   };
 
-  var state = { tab: "day", date: todayIst(), rows: [], settings: null, hours: [], closures: [], banner: null };
+  var state = { tab: window.location.hash === "#chats" ? "chats" : "day", chat: null, date: todayIst(), rows: [], settings: null, hours: [], closures: [], banner: null };
 
   /* ------------------------------------------------------------ DOM helpers */
   function append(el, c) {
@@ -163,10 +163,12 @@
     Array.prototype.forEach.call(nav.querySelectorAll("[data-tab]"), function (b) {
       b.setAttribute("aria-pressed", b.getAttribute("data-tab") === state.tab ? "true" : "false");
     });
+    stopChatTimer();
     clear(app);
     if (bannerEl) app.appendChild(bannerEl);   // keep the last message across a re-render
     if (state.tab === "day") renderDay();
     else if (state.tab === "closures") renderClosures();
+    else if (state.tab === "chats") renderChats();
     else renderSettings();
   }
 
@@ -304,6 +306,86 @@
   }
 
   /* ------------------------------------------------------------ closures */
+  /* ------------------------------------------------------------ chats */
+  var chatTimer = null;
+  function stopChatTimer() { if (chatTimer) { window.clearInterval(chatTimer); chatTimer = null; } }
+
+  function renderChats() {
+    var box = h("div"), listEl = h("div", { class: "a-list" }), thread = h("div", { class: "a-chat" });
+    var msgsEl = h("div", { class: "a-chat__msgs", "aria-live": "polite" });
+    var ta = h("textarea", { rows: "3", maxlength: "1000", "aria-label": "Cevap" });
+    var sendB = h("button", { class: "btn-sm", type: "submit", text: "Gönder" });
+    var closeB = h("button", { class: "btn-sm btn-sm--danger", type: "button", text: "Görüşmeyi kapat" });
+    var titleEl = h("div", { class: "a-day-title" });
+    var form = h("form", { class: "a-chat__form", onsubmit: function (e) {
+      e.preventDefault();
+      var body = ta.value.trim();
+      if (!body || !state.chat) return;
+      sendB.disabled = true;
+      sb.from("chat_messages").insert({ handoff_id: state.chat, sender: "staff", body: body }).then(function (r) {
+        sendB.disabled = false;
+        if (r.error) { banner("Gönderilemedi.", "error"); return; }
+        ta.value = ""; refresh();
+      });
+    } }, ta, h("div", { class: "a-chat__actions" }, sendB, closeB));
+    closeB.addEventListener("click", function () {
+      if (!state.chat || !window.confirm("Görüşme kapatılsın mı? Müşteri yeni mesaj yazamaz.")) return;
+      sb.from("chat_handoffs").update({ status: "closed" }).eq("id", state.chat).then(function (r) {
+        if (r.error) { banner("Kapatılamadı.", "error"); return; }
+        state.chat = null; refresh();
+      });
+    });
+    thread.appendChild(titleEl); thread.appendChild(msgsEl); thread.appendChild(form);
+    box.appendChild(h("p", { class: "a-empty", text: "Personele devredilen sohbetler 24 saat sonra otomatik silinir." }));
+    box.appendChild(h("div", { class: "a-chats" }, listEl, thread));
+    app.appendChild(box);
+
+    function stamp(iso) {
+      return new Intl.DateTimeFormat("tr-TR", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit", timeZone: TZ }).format(new Date(iso));
+    }
+    function drawList(rows) {
+      clear(listEl);
+      if (!rows.length) { listEl.appendChild(h("p", { class: "a-empty", text: "Açık sohbet yok." })); return; }
+      rows.forEach(function (c) {
+        var waiting = !c.last_staff_at || c.last_customer_at > c.last_staff_at;
+        listEl.appendChild(h("button", { type: "button", class: "a-chatrow" + (c.id === state.chat ? " is-active" : ""),
+          onclick: function () { state.chat = c.id; refresh(); } },
+          h("span", { text: stamp(c.created_at) + " · " + c.lang.toUpperCase() }),
+          waiting ? h("span", { class: "a-badge a-badge--confirmed", text: "Cevap bekliyor" }) : null));
+      });
+    }
+    function drawThread(msgs) {
+      thread.hidden = !state.chat;
+      if (!state.chat) return;
+      var atEnd = msgsEl.scrollTop + msgsEl.clientHeight >= msgsEl.scrollHeight - 20;
+      clear(msgsEl);
+      msgs.forEach(function (m) {
+        msgsEl.appendChild(h("div", { class: "a-chat__msg a-chat__msg--" + m.sender },
+          h("span", { class: "a-chat__who", text: (m.sender === "staff" ? "Siz" : m.sender === "bot" ? "Bot" : "Müşteri") + " · " + stamp(m.created_at) }),
+          h("div", { text: m.body })));
+      });
+      if (atEnd) msgsEl.scrollTop = msgsEl.scrollHeight;
+    }
+    function refresh() {
+      sb.from("chat_handoffs").select("*").eq("status", "open").order("created_at", { ascending: false }).then(function (r) {
+        if (state.tab !== "chats") return;
+        if (r.error) { banner("Sohbetler okunamadı.", "error"); return; }
+        var rows = r.data || [];
+        if (state.chat && !rows.some(function (c) { return c.id === state.chat; })) state.chat = null;
+        drawList(rows);
+        if (!state.chat) { drawThread([]); return; }
+        var cur = rows.filter(function (c) { return c.id === state.chat; })[0];
+        titleEl.textContent = stamp(cur.created_at) + " · " + cur.lang.toUpperCase();
+        sb.from("chat_messages").select("*").eq("handoff_id", state.chat).order("id").then(function (m) {
+          if (state.tab === "chats" && !m.error) drawThread(m.data || []);
+        });
+      });
+    }
+    refresh();
+    stopChatTimer();
+    chatTimer = window.setInterval(refresh, 10000);
+  }
+
   function renderClosures() {
     var box = h("div", null, h("p", { text: "Yükleniyor…" }));
     app.appendChild(box);
