@@ -3,7 +3,7 @@
 export const KNOWLEDGE = `
 RESTORAN: Kumo Izakaya — Japon izakaya, binchotan kömüründe robata ocağı, sashimi/nigiri, sake. Şef: Ren Takahashi (Executive Chef).
 ADRES: Bulut Sokak No. 7, Beşiktaş, İstanbul. Harita: https://maps.google.com/?q=Kumo+Izakaya+Istanbul
-İLETİŞİM: Telefon +90 538 547 02 89 · E-posta masa@kumoizakaya.example
+İLETİŞİM: Telefon +90 538 547 02 89 · E-posta kumoizakaya.info@gmail.com
 SAAT: Salı–Cumartesi 18:00–00:00 (son oturuş 22:00). Pazar ve Pazartesi kapalı. (Güncel saatler ve özel kapalı günler aşağıda "GÜNCEL TAKVİM" bölümünde.)
 ULAŞIM / OTOPARK: Kesin ulaşım ve otopark bilgisi yok; sorulursa bilmediğini söyle, telefona yönlendir.
 FİYATLAR: Türk Lirası (₺).
