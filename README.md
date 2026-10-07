@@ -185,6 +185,17 @@ pg_cron "kumo-chat-cleanup" ── 24 saati geçen devirleri siler
 - **Telefon numarası:** hata mesajındaki numara `js/i18n.js` → `chat-err-down` içindedir.
 - **Panel:** `admin.html#chats` — açık devirler, "Cevap bekliyor" rozeti, cevap yazma, görüşmeyi kapatma. Telegram bildirimindeki buton bu sekmeyi açar.
 
+## Gmail günlük özeti (Telegram)
+
+Her sabah 09:00'da Gmail'e son 24 saatte gelen mailler önem sırasına dizilip (🔴 Acil · 🟠 Önemli · 🟢 Bilgi · ⚪ Önemsiz) Telegram'a gönderilir. Kod `automation/gmail-ozet/` altında; **Google Apps Script** olarak özetlenecek Gmail hesabının içinde çalışır (Gmail'i yalnızca okur, şifre/OAuth istemcisi gerekmez). Sıralama kural tabanlıdır (anahtar kelime, VIP gönderen, Gmail önemli/yıldız etiketi; bülten/noreply düşer); mail içeriği üçüncü tarafa gitmez. Sitenin kendi "Yeni rezervasyon / iptal" bildirimleri özetten çıkarılır.
+
+Kurulum:
+1. script.google.com → Yeni proje (özetlenecek Gmail hesabıyla). `Code.gs` içeriğini yapıştırın; Proje Ayarları → "appsscript.json'u göster" → `appsscript.json` içeriğini yapıştırın.
+2. Proje Ayarları → Script Properties: `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID` (Supabase secret'larındakiyle aynı bot ve chat).
+3. `kurulum` fonksiyonunu çalıştırın (izinleri onaylayın) → günlük tetikleyici kurulur. Sonra `testOzet` ile hemen bir özet gönderip deneyin.
+
+Kuralları `Code.gs` başındaki `AYARLAR` bölümünden değiştirin (`VIP_GONDERENLER`, `ACIL_KELIMELER`, `ONEMLI_KELIMELER`, `SAAT`). Google tetikleyiciyi seçilen saatin ±15 dk içinde çalıştırır.
+
 ## Palet
 
 Renk paleti kül grisi ve neredeyse-beyaz kağıt arasında geçiş yapar (`--sumi`, `--washi`), tek bir sıcak vurgu olan pirinç/altın (`--kin`) ile. Önceki kırmızı lake/akçaağaç vurgusu (`--momiji`) kaldırıldı; aynı değişken adı korundu ama artık nötr bir kül grisi taşıyor, böylece onu kullanan yapısal öğeleri (aktif sekme çizgisi, rezervasyon butonu, checkbox) tek tek değiştirmek gerekmedi.
