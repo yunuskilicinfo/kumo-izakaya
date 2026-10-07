@@ -542,12 +542,12 @@
     var box = h("div", null, h("p", { text: "Yükleniyor…" }));
     app.appendChild(box);
     var since = new Date(Date.now() - 30 * 864e5).toISOString();
-    sb.from("events").select("*, event_bookings(id, party_size, status, note, created_at, profiles(full_name, phone, email))")
+    sb.from("events").select("*, closures(area), event_bookings(id, party_size, status, note, created_at, profiles(full_name, phone, email))")
       .gte("starts_at", since).order("starts_at").then(function (r) {
         clear(box);
         if (r.error) { banner("Etkinlikler okunamadı: " + r.error.message, "error"); return; }
         box.appendChild(h("h1", { text: "Üyelere özel akşamlar" }));
-        box.appendChild(h("p", { class: "a-res__meta", text: "Yalnızca giriş yapmış üyeler görür ve yer ayırtır (hesap.html). Kapasite normal masa kapasitesinden bağımsızdır; o akşam salonu/özel odayı normal rezervasyona kapatmak için formdaki seçeneği kullanın." }));
+        box.appendChild(h("p", { class: "a-res__meta", text: "Yalnızca giriş yapmış üyeler görür ve yer ayırtır (hesap.html). Kapasite normal masa kapasitesinden bağımsızdır; o akşam salonu/özel odayı normal rezervasyona kapatmak için formdaki seçeneği kullanın. Etkinlik iptal edilince o kapalı gün de otomatik kalkar." }));
         box.appendChild(eventForm());
         box.appendChild(h("h2", { text: "Akşamlar" }));
         if (!r.data.length) { box.appendChild(h("p", { class: "a-empty", text: "Henüz etkinlik yok." })); return; }
@@ -613,6 +613,8 @@
     var bodyEn = h("textarea", { maxlength: 1500, rows: 4 }); bodyEn.value = e ? e.body_en || "" : "";
     var closeArea = h("select", null, h("option", { value: "", text: "Kapatma (normal rezervasyon devam)" }),
       h("option", { value: "hall", text: "O gün salonu kapat" }), h("option", { value: "private", text: "O gün özel odayı kapat" }), h("option", { value: "all", text: "O gün tümünü kapat" }));
+    var linked = e && e.closures && e.closures[0];
+    if (linked) closeArea.value = linked.area;
     var publish = h("input", { type: "checkbox", id: "ev-pub", checked: e ? e.status === "published" : false });
     var btn = h("button", { class: "btn-solid", type: "submit", text: e ? "Değişiklikleri kaydet" : "Etkinliği oluştur" });
 
@@ -627,13 +629,22 @@
         capacity: +cap.value, max_party: Math.min(+maxP.value, +cap.value),
         status: publish.checked ? "published" : "draft"
       };
-      var q = e ? sb.from("events").update(row).eq("id", e.id) : sb.from("events").insert(row);
+      var q = e ? sb.from("events").update(row).eq("id", e.id).select("id").single() : sb.from("events").insert(row).select("id").single();
       q.then(function (x) {
         if (x.error) { btn.disabled = false; banner("Kaydedilemedi: " + x.error.message, "error"); return; }
-        var done = function () { state.editEvent = null; banner(e ? "Etkinlik güncellendi." : "Etkinlik oluşturuldu."); render(); };
-        if (closeArea.value) {
-          sb.from("closures").insert({ date: date.value, area: closeArea.value, reason: row.title_tr.slice(0, 200) }).then(done);
-        } else done();
+        var id = x.data.id;
+        function done(c) {
+          state.editEvent = null;
+          if (c && c.error) banner("Etkinlik kaydedildi ama kapalı gün ayarlanamadı: " + c.error.message, "error");
+          else banner(e ? "Etkinlik güncellendi." : "Etkinlik oluşturuldu.");
+          render();
+        }
+        // Etkinliğe bağlı kapalı gün: önce eskisini kaldır (tarih/alan değişmiş olabilir), seçiliyse yenisini ekle.
+        // Etkinlik iptal edilince veritabanı tetikleyicisi bu kaydı kendiliğinden siler.
+        sb.from("closures").delete().eq("event_id", id).then(function (d) {
+          if (d.error || !closeArea.value) { done(d); return; }
+          sb.from("closures").insert({ date: date.value, area: closeArea.value, reason: row.title_tr.slice(0, 200), event_id: id }).then(done);
+        });
       });
     } },
       h("div", { class: "a-row" }, field("Başlık (TR)", titleTr, "e-ttr"), field("Başlık (EN)", titleEn, "e-ten")),
