@@ -1,0 +1,119 @@
+/* ==========================================================================
+   KUMO IZAKAYA — üye hesabı (hesap.html)
+   pages.css kabuğunun üstüne; açık (washi) zemin.
+   ========================================================================== */
+.page--wide{ max-width: 46rem; }
+.page h2{ font-size: var(--step-title); margin: 0 0 var(--sp-4); }
+.page h3{ font-size: 1.05rem; margin: var(--sp-5) 0 var(--sp-3); }
+
+.acc-lead{ font-size: var(--step-lead); margin-bottom: var(--sp-3); }
+.acc-muted{ color: var(--ash-on-light); }
+.acc-small{ font-size: var(--step-small); }
+.acc-notice{ margin-bottom: var(--sp-5); }
+.acc-foot{ margin-top: var(--sp-8); }
+
+.acc-perks{ padding-left: 1.2rem; margin: 0 0 var(--sp-5); }
+.acc-perks li{ line-height: 1.65; margin-bottom: var(--sp-2); }
+
+/* giriş kartı */
+.acc-login{ display: flex; flex-direction: column; gap: var(--sp-4); }
+.acc-google{ gap: var(--sp-3); width: 100%; }
+.acc-google__g{ width: 1.15rem; height: 1.15rem; background: #fff; border-radius: 50%; padding: 2px; box-sizing: content-box; }
+.acc-or{ margin: 0; text-align: center; font-size: var(--step-small); color: var(--ash-on-light); }
+.acc-legal{ margin: 0; font-size: var(--step-small); color: var(--ash-on-light); }
+.acc-legal a{ color: var(--sumi-text); }
+.acc-otp{ display: flex; flex-direction: column; gap: var(--sp-3); }
+.acc-linkbtn{
+  all: unset; cursor: pointer; font-size: var(--step-small);
+  text-decoration: underline; text-underline-offset: 3px; color: var(--sumi-text);
+}
+.acc-linkbtn:focus-visible{ outline: 2px solid var(--kin); outline-offset: 3px; }
+
+/* form */
+.acc-field{ display: flex; flex-direction: column; gap: var(--sp-1); margin-bottom: var(--sp-4); min-width: 0; }
+.acc-field label, .acc-label{ font-size: var(--step-label); color: var(--ash-on-light); letter-spacing: var(--track-label); }
+.acc-field input, .acc-field select, .acc-form select, .acc-event select{
+  min-height: 2.75rem;
+  padding: 0 var(--sp-3);
+  border: 1px solid var(--rule-light);
+  border-radius: 4px;
+  background: #fff;
+  color: var(--sumi-text);
+  font: inherit;
+  font-size: 1rem;
+  width: 100%;
+}
+.acc-field input:focus-visible, .acc-field select:focus-visible, .acc-event select:focus-visible{
+  outline: 2px solid var(--kin); outline-offset: 1px;
+}
+.acc-row{ display: grid; grid-template-columns: 1fr 2fr; gap: var(--sp-3); }
+.acc-check{ margin-bottom: var(--sp-5); }
+.acc-check label{ color: var(--sumi-text); line-height: 1.55; }
+.acc-form .btn-solid{ width: 100%; }
+
+/* başlık satırı */
+.acc-top{
+  display: flex; align-items: flex-start; justify-content: space-between;
+  gap: var(--sp-4); flex-wrap: wrap; margin-bottom: var(--sp-5);
+}
+.acc-top h1{ margin-bottom: var(--sp-1); }
+.acc-top p{ margin: 0; word-break: break-all; }
+
+.acc-sec{ margin-top: var(--sp-8); }
+.acc-sec:first-of-type{ margin-top: var(--sp-6); }
+
+/* sadakat kartı */
+.acc-loyalty{ background: var(--sumi); color: var(--washi); border-color: var(--sumi); }
+.acc-loyalty .acc-muted{ color: var(--ash); }
+.acc-loyalty p{ margin: var(--sp-2) 0 0; }
+.acc-stamps{ display: flex; flex-wrap: wrap; gap: var(--sp-3); margin-bottom: var(--sp-4); }
+.acc-stamp{
+  width: 3rem; height: 3rem; border-radius: 50%;
+  border: 1px dashed var(--ash);
+  display: inline-flex; align-items: center; justify-content: center;
+  font-family: var(--font-display); font-size: 1.35rem; line-height: 1;
+}
+.acc-stamp.is-on{ border: 2px solid var(--kin); color: var(--kin); transform: rotate(-8deg); }
+.acc-loyalty__count{ font-family: var(--font-display); font-size: var(--step-title); }
+
+/* listeler */
+.acc-list{ display: flex; flex-direction: column; gap: var(--sp-3); }
+.acc-item{
+  display: flex; align-items: center; justify-content: space-between; gap: var(--sp-4);
+  padding: var(--sp-4) var(--sp-5);
+  border: 1px solid var(--rule-light); border-radius: 6px; background: #fff;
+}
+.acc-item__title{ font-weight: 500; margin-bottom: var(--sp-1); }
+.acc-item .btn-solid{ flex: none; }
+.acc-reward{ border-color: var(--kin); }
+.acc-reward__code{ font-family: var(--font-display); font-size: 1.4rem; letter-spacing: .08em; }
+.acc-reward__what{ text-align: right; font-size: var(--step-small); }
+
+.acc-badge{
+  display: inline-block; flex: none;
+  padding: .2rem .7rem; border-radius: var(--radius-pill);
+  border: 1px solid var(--rule-light);
+  font-size: var(--step-label); letter-spacing: var(--track-label); color: var(--ash-on-light);
+}
+.acc-badge--ok, .acc-badge--confirmed{ border-color: var(--kin); color: var(--kin-on-light); }
+.acc-badge--completed{ color: var(--sumi-text); }
+
+/* etkinlikler */
+.acc-event{ margin-block: 0; }
+.acc-event h3{ margin: var(--sp-1) 0 var(--sp-3); font-size: var(--step-title); }
+.acc-event__when{ margin: 0; font-size: var(--step-small); color: var(--kin-on-light); letter-spacing: var(--track-label); }
+.acc-event__body{ white-space: pre-line; line-height: 1.65; }
+.acc-event select{ width: auto; min-width: 4.5rem; }
+.acc-actions{ display: flex; align-items: center; flex-wrap: wrap; gap: var(--sp-3); margin-top: var(--sp-4); }
+.acc-inline{ font-size: var(--step-small); color: var(--ash-on-light); }
+
+.acc-danger{ border-color: #C97A6A; color: #6b2d22; }
+.page .acc-danger{ color: #6b2d22; }
+
+@media (max-width: 34rem){
+  .acc-item{ flex-direction: column; align-items: flex-start; }
+  .acc-reward__what{ text-align: left; }
+  .acc-stamps{ gap: var(--sp-2); }
+  .acc-stamp{ width: 2.5rem; height: 2.5rem; box-sizing: border-box; }
+  .acc-loyalty{ padding: var(--sp-5); }
+}

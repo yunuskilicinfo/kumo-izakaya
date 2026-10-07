@@ -4,12 +4,17 @@
    turnstileSiteKey Cloudflare Turnstile SITE key. Aşağıdaki değer Cloudflare'in
                     herkese açık TEST anahtarıdır (her zaman geçer) — yayına almadan
                     önce kendi widget'ınızın site key'iyle değiştirin (README).
-   supabaseUrl/Key  Yalnızca admin.html girişi için (publishable key herkese açıktır)
+   supabaseUrl/Key  Admin ve üye girişi için (publishable key herkese açıktır)
+   accountPath      Üye hesabı sayfası
+   emailOtp         E-postaya kodla giriş. Alan adı + Resend SMTP Supabase Auth'a
+                    tanımlanınca true yapın (README → Üyelik); o zamana kadar yalnızca Google.
    ========================================================================== */
 window.KUMO_CONFIG = {
   apiBase: "https://qcvcvbugvbpxyimeonuf.supabase.co/functions/v1/booking",
   chatApiBase: "https://qcvcvbugvbpxyimeonuf.supabase.co/functions/v1/chat",
   turnstileSiteKey: "1x00000000000000000000AA",
   supabaseUrl: "https://qcvcvbugvbpxyimeonuf.supabase.co",
-  supabaseKey: "sb_publishable_7PN2arFuDfP2evTRtip5RA_4la9d3r5"
+  supabaseKey: "sb_publishable_7PN2arFuDfP2evTRtip5RA_4la9d3r5",
+  accountPath: "hesap.html",
+  emailOtp: false
 };

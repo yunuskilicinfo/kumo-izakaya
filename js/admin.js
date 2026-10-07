@@ -2,7 +2,8 @@
    KUMO IZAKAYA — yönetim paneli
    Giriş: Supabase Auth (e-posta + şifre). Okuma/ayar/kapalı gün işlemleri RLS
    ile doğrudan tablolara, e-posta gönderen işlemler (iptal, durum, manuel
-   rezervasyon) Edge Function'ın /admin rotasına gider.
+   rezervasyon, ödül kullanımı, etkinlik iptali) Edge Function'ın /admin rotasına gider.
+   Üyeler/etkinlikler: profiles, loyalty_stamps, rewards, events, event_bookings (RLS: is_admin()).
    Müşteri girdisi (ad, not…) DOM'a yalnızca textContent ile basılır.
    ========================================================================== */
 (function () {
@@ -30,7 +31,8 @@
     duplicate: "Aynı telefonla o gün için zaten bir rezervasyon var. “Kapasiteyi aş” ile yine de ekleyebilirsiniz."
   };
 
-  var state = { tab: window.location.hash === "#chats" ? "chats" : "day", chat: null, date: todayIst(), rows: [], settings: null, hours: [], closures: [], banner: null };
+  var state = { tab: window.location.hash === "#chats" ? "chats" : "day", chat: null, date: todayIst(), rows: [], settings: null, hours: [], closures: [], banner: null,
+    me: null, members: {}, editEvent: null };
 
   /* ------------------------------------------------------------ DOM helpers */
   function append(el, c) {
@@ -133,6 +135,7 @@
   function start() {
     sb.auth.getSession().then(function (r) {
       if (!r.data.session) { showLogin(); return; }
+      state.me = r.data.session.user.id;
       sb.from("admin_users").select("user_id").maybeSingle().then(function (a) {
         if (a.error || !a.data) {
           sb.auth.signOut().then(function () { showLogin("Bu hesabın yönetici yetkisi yok."); });
@@ -169,6 +172,8 @@
     if (state.tab === "day") renderDay();
     else if (state.tab === "closures") renderClosures();
     else if (state.tab === "chats") renderChats();
+    else if (state.tab === "members") renderMembers();
+    else if (state.tab === "events") renderEvents();
     else renderSettings();
   }
 
@@ -178,10 +183,22 @@
     app.appendChild(box);
     var bounds = dayBounds(state.date);
     box.appendChild(h("p", { text: "Yükleniyor…" }));
-    sb.from("reservations").select("*").gte("starts_at", bounds[0]).lt("starts_at", bounds[1]).order("starts_at").then(function (r) {
+    sb.from("reservations").select("*, profiles(full_name, birth_month, birth_day)").gte("starts_at", bounds[0]).lt("starts_at", bounds[1]).order("starts_at").then(function (r) {
       if (r.error) { clear(box); banner("Rezervasyonlar okunamadı: " + r.error.message, "error"); return; }
       state.rows = r.data;
-      drawDay(box);
+      // Üye rezervasyonları: toplam damga + kullanılmamış ödüller
+      var ids = r.data.map(function (x) { return x.user_id; }).filter(function (x, i, a) { return x && a.indexOf(x) === i; });
+      state.members = {};
+      if (!ids.length) { drawDay(box); return; }
+      Promise.all([
+        sb.from("loyalty_stamps").select("user_id").in("user_id", ids),
+        sb.from("rewards").select("id, code, user_id").in("user_id", ids).eq("status", "issued").order("issued_at")
+      ]).then(function (res) {
+        ids.forEach(function (id) { state.members[id] = { stamps: 0, rewards: [] }; });
+        (res[0].data || []).forEach(function (x) { state.members[x.user_id].stamps++; });
+        (res[1].data || []).forEach(function (x) { state.members[x.user_id].rewards.push(x); });
+        drawDay(box);
+      });
     });
   }
 
@@ -259,6 +276,23 @@
       actions.push(act("Onaylıya al", { action: "set_status", status: "confirmed" }));
     }
     var meta = [AREA[r.area] || r.area, r.party_size + " kişi"];
+    var perks = [];
+    if (r.user_id) {
+      var mi = state.members[r.user_id] || { stamps: 0, rewards: [] };
+      perks.push(h("span", { class: "a-badge a-badge--member", text: "Üye · " + mi.stamps + " damga" }));
+      if (nearBirthday(r.profiles, state.date)) perks.push(h("span", { class: "a-badge a-badge--gift", text: "🎂 Doğum günü haftası" }));
+      mi.rewards.forEach(function (w) {
+        perks.push(h("span", { class: "a-badge a-badge--gift", text: "🎁 Ödül hazır · " + w.code }));
+        if (r.status === "confirmed" || r.status === "completed") perks.push(h("button", { class: "btn-sm", type: "button", text: "Ödülü kullan", onclick: function (e) {
+          if (!window.confirm(w.code + " ödülü bu ziyarette kullanıldı olarak işaretlensin mi?")) return;
+          e.target.disabled = true;
+          callAdmin({ action: "redeem_reward", id: w.id, reservation_id: r.id }).then(function (res) {
+            if (res.body && res.body.ok) { banner(w.code + " kullanıldı."); render(); }
+            else { e.target.disabled = false; banner("İşlem başarısız (" + ((res.body && res.body.error) || res.status) + ").", "error"); }
+          }).catch(function () { e.target.disabled = false; banner("Bağlantı hatası.", "error"); });
+        } }));
+      });
+    }
     return h("article", { class: "a-res" + (r.status === "confirmed" ? "" : " a-res--off") },
       h("div", { class: "a-res__time", text: fmtTime(r.starts_at) }),
       h("div", null,
@@ -266,7 +300,8 @@
         h("div", { class: "a-res__meta" }, meta.join(" · ") + " · ", h("a", { href: "tel:" + r.phone.replace(/[^\d+]/g, ""), text: r.phone }),
           r.email ? " · " : null, r.email ? h("a", { href: "mailto:" + r.email, text: r.email }) : null),
         h("div", { class: "a-res__meta", text: r.code + (r.source === "admin" ? " · elle eklendi" : "") }),
-        r.note ? h("div", { class: "a-res__note", text: "“" + r.note + "”" }) : null),
+        r.note ? h("div", { class: "a-res__note", text: "“" + r.note + "”" }) : null,
+        perks.length ? h("div", { class: "a-res__perks" }, perks) : null),
       h("div", { class: "a-res__actions" }, actions));
   }
 
@@ -422,6 +457,197 @@
     });
   }
 
+  function nearBirthday(p, date) {
+    if (!p || !p.birth_month || !p.birth_day) return false;
+    var d = Date.parse(date + "T12:00:00Z"), y = new Date(d).getUTCFullYear();
+    for (var k = -1; k <= 1; k++) {
+      if (Math.abs(Date.UTC(y + k, p.birth_month - 1, p.birth_day, 12) - d) <= 7 * 864e5) return true;
+    }
+    return false;
+  }
+  function fmtDate(iso) {
+    return iso ? new Intl.DateTimeFormat("tr-TR", { day: "2-digit", month: "2-digit", year: "numeric", timeZone: TZ }).format(new Date(iso)) : "";
+  }
+  function consented(p) {
+    return !!p.marketing_consent_at && (!p.marketing_revoked_at || p.marketing_revoked_at < p.marketing_consent_at);
+  }
+  function telHref(phone) { return "tel:" + phone.replace(/[^\d+]/g, ""); }
+
+  /* ------------------------------------------------------------ members */
+  function renderMembers() {
+    var box = h("div", null, h("p", { text: "Yükleniyor…" }));
+    app.appendChild(box);
+    sb.from("profiles").select("id, email, full_name, phone, lang, birth_month, birth_day, marketing_consent_at, marketing_revoked_at, created_at, last_seen_at, loyalty_stamps(reward_id), rewards(status)")
+      .order("created_at", { ascending: false }).limit(2000).then(function (r) {
+        clear(box);
+        if (r.error) { banner("Üyeler okunamadı: " + r.error.message, "error"); return; }
+        var rows = r.data.filter(function (p) { return p.id !== state.me; });
+        var optIn = rows.filter(consented);
+        box.appendChild(h("h1", { text: "Üyeler" }));
+        box.appendChild(h("p", { class: "a-res__meta", text: rows.length + " üye · " + optIn.length + " kişi bülten izni verdi" }));
+
+        var q = h("input", { class: "a-search", type: "search", placeholder: "Ad, e-posta ya da telefon ara", "aria-label": "Üye ara" });
+        var csv = h("button", { class: "btn-sm", type: "button", text: "Bülten listesini indir (CSV)", onclick: function () { downloadCsv(optIn); } });
+        box.appendChild(h("div", { class: "a-bar" }, q, csv));
+        var list = h("div", { class: "a-list" });
+        box.appendChild(list);
+
+        function draw() {
+          var needle = q.value.trim().toLocaleLowerCase("tr");
+          clear(list);
+          var shown = rows.filter(function (p) {
+            return !needle || [p.full_name, p.email, p.phone].some(function (v) { return v && v.toLocaleLowerCase("tr").indexOf(needle) >= 0; });
+          });
+          if (!shown.length) { list.appendChild(h("p", { class: "a-empty", text: "Üye bulunamadı." })); return; }
+          shown.slice(0, 300).forEach(function (p) {
+            var st = p.loyalty_stamps || [], rw = p.rewards || [];
+            var open = st.filter(function (x) { return !x.reward_id; }).length;
+            var unused = rw.filter(function (x) { return x.status === "issued"; }).length;
+            list.appendChild(h("article", { class: "a-res a-member" },
+              h("div", null,
+                h("div", null, h("span", { class: "a-res__name", text: p.full_name || "(adsız)" }),
+                  consented(p) ? h("span", { class: "a-badge a-badge--confirmed", text: "Bülten ✓" }) : null,
+                  unused ? h("span", { class: "a-badge a-badge--gift", text: "🎁 " + unused + " ödül" }) : null),
+                h("div", { class: "a-res__meta" }, p.email ? h("a", { href: "mailto:" + p.email, text: p.email }) : "",
+                  p.phone ? " · " : null, p.phone ? h("a", { href: telHref(p.phone), text: p.phone }) : null),
+                h("div", { class: "a-res__meta", text: "Üyelik " + fmtDate(p.created_at) +
+                  (p.birth_month ? " · 🎂 " + String(p.birth_day).padStart(2, "0") + "." + String(p.birth_month).padStart(2, "0") : "") })),
+              h("div", { class: "a-res__meta", style: "text-align:right", text: st.length + " ziyaret · kartta " + open + " damga" })));
+          });
+          if (shown.length > 300) list.appendChild(h("p", { class: "a-empty", text: "İlk 300 sonuç gösteriliyor; aramayı daraltın." }));
+        }
+        q.addEventListener("input", draw);
+        draw();
+      });
+  }
+
+  function downloadCsv(rows) {
+    // Excel formül enjeksiyonuna karşı = + - @ ile başlayan hücreler ' ile başlatılır
+    function cell(v) {
+      var s = v == null ? "" : String(v);
+      if (/^[=+\-@]/.test(s)) s = "'" + s;
+      return "\"" + s.replace(/"/g, "\"\"") + "\"";
+    }
+    var lines = [["Ad soyad", "E-posta", "Telefon", "Dil", "İzin tarihi"].map(cell).join(";")];
+    rows.forEach(function (p) { lines.push([p.full_name, p.email, p.phone, p.lang, fmtDate(p.marketing_consent_at)].map(cell).join(";")); });
+    var blob = new Blob(["﻿" + lines.join("\r\n")], { type: "text/csv;charset=utf-8" });
+    var a = h("a", { href: URL.createObjectURL(blob), download: "kumo-bulten-" + todayIst() + ".csv" });
+    document.body.appendChild(a); a.click(); a.remove();
+    window.setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
+  }
+
+  /* ------------------------------------------------------------ events */
+  var EV_STATUS = { draft: "Taslak", published: "Yayında", cancelled: "İptal" };
+  function renderEvents() {
+    var box = h("div", null, h("p", { text: "Yükleniyor…" }));
+    app.appendChild(box);
+    var since = new Date(Date.now() - 30 * 864e5).toISOString();
+    sb.from("events").select("*, event_bookings(id, party_size, status, note, created_at, profiles(full_name, phone, email))")
+      .gte("starts_at", since).order("starts_at").then(function (r) {
+        clear(box);
+        if (r.error) { banner("Etkinlikler okunamadı: " + r.error.message, "error"); return; }
+        box.appendChild(h("h1", { text: "Üyelere özel akşamlar" }));
+        box.appendChild(h("p", { class: "a-res__meta", text: "Yalnızca giriş yapmış üyeler görür ve yer ayırtır (hesap.html). Kapasite normal masa kapasitesinden bağımsızdır; o akşam salonu/özel odayı normal rezervasyona kapatmak için formdaki seçeneği kullanın." }));
+        box.appendChild(eventForm());
+        box.appendChild(h("h2", { text: "Akşamlar" }));
+        if (!r.data.length) { box.appendChild(h("p", { class: "a-empty", text: "Henüz etkinlik yok." })); return; }
+        box.appendChild(h("div", { class: "a-list" }, r.data.map(eventCard)));
+      });
+  }
+
+  function eventCard(e) {
+    var bk = (e.event_bookings || []).filter(function (b) { return b.status === "confirmed"; });
+    var taken = bk.reduce(function (n, b) { return n + b.party_size; }, 0);
+    var past = Date.parse(e.starts_at) < Date.now();
+    var actions = [];
+    function setStatus(st) {
+      return function (ev) {
+        ev.target.disabled = true;
+        sb.from("events").update({ status: st }).eq("id", e.id).then(function (x) {
+          if (x.error) { ev.target.disabled = false; banner("Güncellenemedi: " + x.error.message, "error"); return; }
+          banner(st === "published" ? "Yayınlandı; üyeler artık görebilir." : "Taslağa alındı."); render();
+        });
+      };
+    }
+    if (e.status !== "cancelled" && !past) {
+      actions.push(h("button", { class: "btn-sm", type: "button", text: "Düzenle", onclick: function () { state.editEvent = e; render(); window.scrollTo(0, 0); } }));
+      if (e.status === "draft") actions.push(h("button", { class: "btn-sm", type: "button", text: "Yayınla", onclick: setStatus("published") }));
+      else actions.push(h("button", { class: "btn-sm", type: "button", text: "Taslağa al", onclick: setStatus("draft") }));
+      actions.push(h("button", { class: "btn-sm btn-sm--danger", type: "button", text: "İptal et", onclick: function (ev) {
+        if (!window.confirm("“" + e.title_tr + "” iptal edilsin mi? Kayıtlı " + bk.length + " üyeye e-posta gider.")) return;
+        ev.target.disabled = true;
+        callAdmin({ action: "cancel_event", id: e.id }).then(function (res) {
+          if (res.body && res.body.ok) { banner("Etkinlik iptal edildi (" + res.body.notified + " üye bilgilendirildi)."); render(); }
+          else { ev.target.disabled = false; banner("İptal edilemedi (" + ((res.body && res.body.error) || res.status) + ").", "error"); }
+        }).catch(function () { ev.target.disabled = false; banner("Bağlantı hatası.", "error"); });
+      } }));
+    }
+    return h("article", { class: "a-res a-ev" + (e.status === "cancelled" || past ? " a-res--off" : "") },
+      h("div", null, h("div", { class: "a-res__time", text: fmtTime(e.starts_at) }), h("div", { class: "a-res__meta", text: fmtDate(e.starts_at) })),
+      h("div", null,
+        h("div", null, h("span", { class: "a-res__name", text: e.title_tr }), h("span", { class: "a-badge a-badge--" + e.status, text: EV_STATUS[e.status] || e.status })),
+        h("div", { class: "a-res__meta", text: taken + " / " + e.capacity + " kişi kayıtlı · kayıt başına en çok " + e.max_party + (e.price_note_tr ? " · " + e.price_note_tr : "") }),
+        bk.length ? h("details", null, h("summary", { text: "Kayıtlar (" + bk.length + ")" }),
+          h("ul", null, bk.map(function (b) {
+            var p = b.profiles || {};
+            return h("li", null, (p.full_name || p.email || "?") + " · " + b.party_size + " kişi · ",
+              p.phone ? h("a", { href: telHref(p.phone), text: p.phone }) : "",
+              b.note ? " · “" + b.note + "”" : "");
+          }))) : null),
+      h("div", { class: "a-res__actions" }, actions));
+  }
+
+  function eventForm() {
+    var e = state.editEvent;
+    var dateV = e ? new Intl.DateTimeFormat("en-CA", { timeZone: TZ }).format(new Date(e.starts_at)) : "";
+    var timeV = e ? fmtTime(e.starts_at) : "19:30";
+    var titleTr = h("input", { type: "text", required: true, maxlength: 120, value: e ? e.title_tr : "" });
+    var titleEn = h("input", { type: "text", maxlength: 120, value: e ? e.title_en || "" : "" });
+    var date = h("input", { type: "date", required: true, min: todayIst(), value: dateV });
+    var time = h("input", { type: "time", required: true, value: timeV });
+    var cap = h("input", { type: "number", min: 1, max: 500, required: true, value: e ? e.capacity : 12 });
+    var maxP = h("input", { type: "number", min: 1, max: 50, required: true, value: e ? e.max_party : 4 });
+    var priceTr = h("input", { type: "text", maxlength: 120, placeholder: "örn. Kişi başı ₺4.500, sake dahil", value: e ? e.price_note_tr || "" : "" });
+    var priceEn = h("input", { type: "text", maxlength: 120, value: e ? e.price_note_en || "" : "" });
+    var bodyTr = h("textarea", { maxlength: 1500, rows: 4 }); bodyTr.value = e ? e.body_tr || "" : "";
+    var bodyEn = h("textarea", { maxlength: 1500, rows: 4 }); bodyEn.value = e ? e.body_en || "" : "";
+    var closeArea = h("select", null, h("option", { value: "", text: "Kapatma (normal rezervasyon devam)" }),
+      h("option", { value: "hall", text: "O gün salonu kapat" }), h("option", { value: "private", text: "O gün özel odayı kapat" }), h("option", { value: "all", text: "O gün tümünü kapat" }));
+    var publish = h("input", { type: "checkbox", id: "ev-pub", checked: e ? e.status === "published" : false });
+    var btn = h("button", { class: "btn-solid", type: "submit", text: e ? "Değişiklikleri kaydet" : "Etkinliği oluştur" });
+
+    var form = h("form", { onsubmit: function (ev) {
+      ev.preventDefault();
+      btn.disabled = true;
+      var row = {
+        title_tr: titleTr.value.trim(), title_en: titleEn.value.trim() || null,
+        body_tr: bodyTr.value.trim() || null, body_en: bodyEn.value.trim() || null,
+        price_note_tr: priceTr.value.trim() || null, price_note_en: priceEn.value.trim() || null,
+        starts_at: new Date(date.value + "T" + time.value + ":00+03:00").toISOString(),
+        capacity: +cap.value, max_party: Math.min(+maxP.value, +cap.value),
+        status: publish.checked ? "published" : "draft"
+      };
+      var q = e ? sb.from("events").update(row).eq("id", e.id) : sb.from("events").insert(row);
+      q.then(function (x) {
+        if (x.error) { btn.disabled = false; banner("Kaydedilemedi: " + x.error.message, "error"); return; }
+        var done = function () { state.editEvent = null; banner(e ? "Etkinlik güncellendi." : "Etkinlik oluşturuldu."); render(); };
+        if (closeArea.value) {
+          sb.from("closures").insert({ date: date.value, area: closeArea.value, reason: row.title_tr.slice(0, 200) }).then(done);
+        } else done();
+      });
+    } },
+      h("div", { class: "a-row" }, field("Başlık (TR)", titleTr, "e-ttr"), field("Başlık (EN)", titleEn, "e-ten")),
+      h("div", { class: "a-row" }, field("Tarih", date, "e-date"), field("Saat", time, "e-time"), field("Kapasite (kişi)", cap, "e-cap"), field("Kayıt başına en çok", maxP, "e-max")),
+      h("div", { class: "a-row" }, field("Ücret notu (TR)", priceTr, "e-ptr"), field("Ücret notu (EN)", priceEn, "e-pen")),
+      field("Açıklama (TR)", bodyTr, "e-btr"), field("Açıklama (EN)", bodyEn, "e-ben"),
+      field("Normal rezervasyon", closeArea, "e-close"),
+      h("div", { class: "a-check" }, publish, h("label", { for: "ev-pub", text: "Yayınla (üyeler hemen görür)" })),
+      h("div", { class: "a-bar" }, btn, e ? h("button", { class: "btn-sm", type: "button", text: "Vazgeç", onclick: function () { state.editEvent = null; render(); } }) : null));
+    var d = h("details", { class: "a-add" }, h("summary", { text: e ? "Düzenleniyor: " + e.title_tr : "+ Yeni özel akşam" }), form);
+    if (e) d.open = true;
+    return d;
+  }
+
   /* ------------------------------------------------------------ settings */
   function renderSettings() {
     var s = state.settings;
@@ -429,6 +655,8 @@
       return field(label, h("input", { type: "number", min: min, value: s[key], required: true, "data-key": key }), "s-" + key);
     }
     var email = h("input", { type: "email", value: s.restaurant_email || "", maxlength: 200 });
+    var rewardTr = h("input", { type: "text", value: s.reward_text_tr || "", maxlength: 200, required: true });
+    var rewardEn = h("input", { type: "text", value: s.reward_text_en || "", maxlength: 200, required: true });
     var btn = h("button", { class: "btn-solid", type: "submit", text: "Kaydet" });
 
     var hourRows = [1, 2, 3, 4, 5, 6, 0].map(function (wd) {
@@ -444,7 +672,7 @@
 
     var form = h("form", { onsubmit: function (e) {
       e.preventDefault(); btn.disabled = true;
-      var patch = { restaurant_email: email.value.trim() || null };
+      var patch = { restaurant_email: email.value.trim() || null, reward_text_tr: rewardTr.value.trim() || s.reward_text_tr, reward_text_en: rewardEn.value.trim() || s.reward_text_en };
       Array.prototype.forEach.call(form.querySelectorAll("[data-key]"), function (i) { patch[i.getAttribute("data-key")] = +i.value; });
       for (var i = 0; i < hourRows.length; i++) {
         var hr = hourRows[i];
@@ -475,6 +703,10 @@
       h("div", { class: "a-row" }, num("slot_minutes", "Slot aralığı (dk)", 15), num("min_lead_minutes", "En az önceden (dk)", 0), num("horizon_days", "En fazla ileri (gün)", 1)),
       h("div", { class: "a-row" }, num("max_party_hall", "Salonda en çok kişi", 1), num("max_party_private", "Özel odada en çok kişi", 1)),
       field("Restoran e-postası (yeni rezervasyon bildirimi)", email, "s-email"),
+      h("h2", { text: "Üyelik" }),
+      h("div", { class: "a-row" }, num("member_horizon_days", "Üye: en fazla ileri (gün)", 1), num("stamps_per_reward", "Ödül için damga sayısı", 1)),
+      h("div", { class: "a-row" }, field("Ödül metni (TR)", rewardTr, "s-rtr"), field("Ödül metni (EN)", rewardEn, "s-ren")),
+      h("p", { class: "a-res__meta", text: "Damga, rezervasyon “Tamamlandı” işaretlenince otomatik verilir. Damga sayısı değişirse yeni ödüller yeni sayıya göre üretilir." }),
       h("h2", { text: "Çalışma saatleri" }),
       h("table", { class: "a-hours" },
         h("thead", null, h("tr", null, h("th", { text: "Gün" }), h("th", { text: "Kapalı" }), h("th", { text: "İlk oturuş" }), h("th", { text: "Son oturuş" }))),

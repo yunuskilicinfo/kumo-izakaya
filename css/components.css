@@ -455,3 +455,24 @@
   color: var(--kin);
   font-weight: 500;
 }
+
+/* ---------------------------------------------------------------------
+   Üyelik: rezervasyon formundaki üye şeridi (js/reserve.js)
+   --------------------------------------------------------------------- */
+.reserve-member{
+  margin: 0 0 var(--sp-5);
+  padding: var(--sp-3) var(--sp-4);
+  border: 1px solid var(--rule-dark);
+  border-radius: 6px;
+  font-size: var(--step-small);
+  color: var(--ash);
+  line-height: 1.55;
+}
+.reserve-member a{ color: var(--washi); }
+.reserve-member--in{ border-color: var(--kin-dim); color: var(--washi); }
+.reserve-confirm__note[hidden]{ display: none; }
+/* "Üyelik" bağlantısıyla nav kalabalıklaştı: dar masaüstünde aralığı daralt, logo tek satır */
+.topbar__mark{ white-space: nowrap; }
+@media (min-width: 861px) and (max-width: 1140px){
+  .topbar__nav{ gap: var(--sp-4); }
+}

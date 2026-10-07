@@ -174,6 +174,7 @@
     <a class="topbar__link" href="#mekan" data-i18n="nav-venue">Mekân</a>
     <a class="topbar__link" href="#sef" data-i18n="nav-chef">Şef</a>
     <a class="topbar__link" href="#rezervasyon" data-i18n="nav-contact">İletişim</a>
+    <a class="topbar__link" href="hesap.html" id="nav-account" data-i18n="nav-account">Üyelik</a>
     <div class="lang-switch" role="group" aria-label="Dil seçimi">
       <button type="button" data-lang="tr" aria-pressed="true" aria-label="Türkçe">TR</button>
       <span aria-hidden="true">/</span>
@@ -481,6 +482,7 @@
 
     <form class="reserve-form" id="reserve-form" novalidate>
       <h2 id="reserve-dialog-h" data-i18n="reserve-h">Bir masa ayırtın</h2>
+      <p class="reserve-member" id="reserve-member" data-i18n="reserve-member-guest">Üye misiniz? <a class="text-link" href="hesap.html">Giriş yapın</a> — bilgileriniz hazır gelsin, her ziyarette damga kazanın.</p>
 
       <div class="field-row">
         <div class="field" id="field-date">
@@ -564,6 +566,7 @@
       <h2 tabindex="-1" id="reserve-confirm-h" data-i18n="confirm-title">Rezervasyonunuz onaylandı</h2>
       <p style="margin-top:var(--sp-3)"><span data-i18n="confirm-body-1">Masanız ayrıldı:</span> <strong id="reserve-confirm-details"></strong>. <span data-i18n="confirm-body-2">Onay e-postası adresinize gönderildi.</span></p>
       <p class="reserve-confirm__code"><span data-i18n="confirm-code">Rezervasyon kodu</span> <strong id="reserve-confirm-code"></strong></p>
+      <p class="reserve-confirm__note" id="reserve-confirm-member" data-i18n="confirm-member" hidden>Rezervasyon hesabınıza eklendi. <a class="text-link" href="hesap.html">Hesabım</a></p>
       <p class="reserve-confirm__note" data-i18n="confirm-note">Planınız değişirse e-postadaki bağlantıdan iptal edebilirsiniz. E-posta gelmediyse spam klasörüne bakın.</p>
     </div>
   </div>
@@ -610,6 +613,7 @@
 <script src="js/config.js" defer></script>
 <script src="js/i18n.js" defer></script>
 <script src="js/main.js" defer></script>
+<script src="js/auth.js" defer></script>
 <script src="js/reserve.js" defer></script>
 <script src="js/chat.js" defer></script>
 </body>

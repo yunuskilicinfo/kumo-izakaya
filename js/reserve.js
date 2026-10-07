@@ -4,6 +4,8 @@
    "booking" → /availability), saat listesini buna göre doldurur ve gönderimde
    /reserve'e yollar. Doğrulama, hata özeti ve dil değişimi davranışı eski
    formla aynı desendedir. API adresi js/config.js'dedir.
+   Üye oturumu varsa (js/auth.js) bilgiler doldurulur, üye ileri tarih sınırı
+   uygulanır ve istekler Authorization ile gider; rezervasyon hesaba bağlanır.
    ========================================================================== */
 (function () {
   "use strict";
@@ -23,11 +25,12 @@
   var confirmPanel = $("reserve-confirm"), confirmHeading = $("reserve-confirm-h");
   var confirmDetails = $("reserve-confirm-details"), confirmCode = $("reserve-confirm-code");
   var turnstileBox = $("turnstile-box");
+  var memberEl = $("reserve-member"), confirmMember = $("reserve-confirm-member"), navAccount = $("nav-account");
 
   var state = {
     data: null, seq: 0, hintKey: null, partyMode: null, autoPrivate: false,
     serverErrKey: null, submitting: false, booked: null, lastInvalid: [],
-    token: "", widgetId: null, tsLoading: false
+    token: "", widgetId: null, tsLoading: false, member: null
   };
 
   /* ---- date bounds: today … +60 days (server enforces the same) ---- */
@@ -37,6 +40,48 @@
   dateField.min = iso(now);
   var maxDate = new Date(now); maxDate.setDate(maxDate.getDate() + 60);
   dateField.max = iso(maxDate);
+
+  /* ---- member session (js/auth.js) ---- */
+  // Misafirde SDK hiç yüklenmez: Authorization yalnızca üye oturumu bulunduysa eklenir.
+  function apiFetch(path, opts) {
+    var A = window.KumoAuth;
+    return (A && state.member ? A.session() : Promise.resolve(null)).then(function (s) {
+      opts = opts || {};
+      if (s) opts.headers = Object.assign({}, opts.headers || {}, { Authorization: "Bearer " + s.access_token });
+      return fetch(cfg.apiBase + path, opts);
+    });
+  }
+  function setI18n(el, key) {
+    if (!el) return;
+    el.setAttribute("data-i18n", key);
+    el.innerHTML = t(key);   // sabit sözlük metni
+  }
+  function prefill() {
+    var m = state.member;
+    if (!m) return;
+    var p = m.profile || {};
+    if (!$("r-name").value && p.full_name) $("r-name").value = p.full_name;
+    if (!$("r-phone").value && p.phone) $("r-phone").value = p.phone;
+    if (!$("r-email").value && m.email) $("r-email").value = m.email;
+  }
+  function initMember() {
+    var A = window.KumoAuth;
+    if (!A) return;
+    A.session().then(function (s) {
+      if (!s) return null;
+      return A.api("me").then(function (r) {
+        if (r.status !== 200 || !r.body || r.body.error) return;
+        state.member = r.body;
+        setI18n(navAccount, "nav-account-in");
+        if (memberEl) { setI18n(memberEl, "reserve-member-in"); memberEl.classList.add("reserve-member--in"); }
+        if (r.body.horizon_days) {
+          var mx = new Date(); mx.setDate(mx.getDate() + r.body.horizon_days);
+          dateField.max = iso(mx);
+        }
+        prefill();
+      });
+    }).catch(function () { /* misafir olarak devam */ });
+  }
 
   /* ---- small state helpers ---- */
   function partyNum() { var n = parseInt(partySel.value, 10); return isNaN(n) ? 0 : n; }
@@ -91,7 +136,7 @@
     var seq = ++state.seq, prev = timeSel.value;
     timeSel.disabled = true;
     setTimeHint("form-time-loading");
-    fetch(cfg.apiBase + "/availability?date=" + encodeURIComponent(date) + "&party=" + party + "&area=" + area())
+    apiFetch("/availability?date=" + encodeURIComponent(date) + "&party=" + party + "&area=" + area())
       .then(function (r) { if (!r.ok) throw new Error("http " + r.status); return r.json(); })
       .then(function (data) { if (seq !== state.seq) return; state.data = data; renderSlots(prev); })
       .catch(function () {
@@ -244,7 +289,7 @@
     submitBtn.disabled = true;
     submitBtn.textContent = t("form-submitting");
 
-    fetch(cfg.apiBase + "/reserve", {
+    apiFetch("/reserve", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload)
@@ -256,6 +301,7 @@
         if (res.body && res.body.ok) {
           state.booked = { date: payload.date, time: payload.time, party: payload.party, code: res.body.code };
           renderConfirm();
+          if (confirmMember) confirmMember.hidden = !res.body.member;
           form.hidden = true;
           confirmPanel.hidden = false;
           confirmHeading.focus();
@@ -287,6 +333,7 @@
       submitBtn.disabled = false;
       resetTime();
       resetTurnstile();
+      prefill();
     } else if (dateField.value && partyNum()) {
       refreshSlots(); // availability may have changed since the dialog was last open
     }
@@ -306,4 +353,11 @@
   };
 
   resetTime();
+  initMember();
+
+  // hesap.html → "Masa ayırt" bağlantısı (index.html?reserve=1) formu doğrudan açar
+  if (/[?&]reserve=1(&|$)/.test(window.location.search) && window.KumoOpenReserve) {
+    try { window.history.replaceState(null, "", window.location.pathname + "#rezervasyon"); } catch (e) { /* yok say */ }
+    window.KumoOpenReserve();
+  }
 })();

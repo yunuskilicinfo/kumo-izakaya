@@ -12,6 +12,8 @@ css/layout.css        bölüm layoutları (hero, menü, mekân, rezervasyon...)
 css/components.css    nav, menü sekmeleri, form, mühür/motif SVG stilleri
 js/main.js             menü sekmeleri, header kontrastı, dil, rezervasyon pop-up'ı
 js/reserve.js          rezervasyon formu (bkz. "Rezervasyon sistemi")
+js/auth.js             üye oturumu (bkz. "Üyelik")
+hesap.html + js/account.js + css/account.css   üye hesabı sayfası
 js/i18n.js             TR/EN sözlüğü — dilin dokunulacağı tek dosya
 js/hero-video.js       hero videosu: ilk scroll'da oynar, loop'a girer
 assets/img/            gerçek fotoğraflar burada
@@ -165,6 +167,49 @@ Edge Function'ın gizli anahtarları **Supabase Dashboard → Edge Functions →
 - Tarih/saat dönüşümü Türkiye'nin sabit UTC+3 saatine göre yapılır (yaz saati uygulaması yok).
 - Personel bildirimi (Telegram/WhatsApp/e-posta) ve müşteri e-postaları en iyi çabayla gönderilir: gönderim başarısız olursa rezervasyon yine de kaydedilir, hata Edge Function loglarına düşer.
 - Hatırlatma yalnızca 24 saatten önce alınmış rezervasyonlar için gider (son dakika rezervasyonuna hatırlatma anlamsız).
+
+## Üyelik
+
+Ücretsiz müşteri üyeliği: Google (ve alan adı gelince e-postaya 6 haneli kod) ile şifresiz giriş, `hesap.html`'de hesap sayfası. Misafir rezervasyonu aynen çalışır; giriş yapmış üyenin rezervasyonu hesabına bağlanır.
+
+```
+index.html (nav "Üyelik/Hesabım", formda üye şeridi) ─┐
+hesap.html + js/account.js ───────────────────────────┤ js/auth.js (supabase-js yalnızca oturum varsa yüklenir)
+                                                      ▼
+Edge Function "booking"   Authorization: Bearer <üye oturumu>
+  /availability · /reserve   üye ise 90 gün ileri + rezervasyon user_id ile kaydedilir
+  /me                        profil, sadakat kartı, ödüller, rezervasyonlar, özel akşamlar
+  /me-update · /me-cancel · /me-delete
+  /event-book · /event-cancel   → e-posta + Telegram "🎟 Etkinlik kaydı"
+  /admin  redeem_reward · cancel_event
+Postgres: profiles · loyalty_stamps · rewards · events · event_bookings (+ reservations.user_id)
+```
+
+Üyeler tablolara **doğrudan erişemez** (her şey Edge Function → service role); yönetici `is_admin()` RLS'iyle okur. Migration: `supabase/migrations/20261007000000_members.sql`.
+
+| Özellik | Nasıl çalışır |
+|---|---|
+| Rezervasyon kolaylığı | Formda ad/telefon/e-posta dolu gelir; hesap sayfasında yaklaşan/geçmiş rezervasyonlar, tek tıkla iptal (personele bildirim gider) |
+| Sadakat damgası | Panelde rezervasyon **Tamamlandı** işaretlenince 1 damga (veritabanı tetikleyicisi). 5 damgada `KR-XXXX` ödül kodu oluşur; personel Günlük ekranında 🎁 rozetinin yanındaki **Ödülü kullan** ile kapatır. "Tamamlandı" geri alınırsa (ödüle dönüşmemiş) damga silinir |
+| İleri tarih | Misafir 60, üye 90 gün ileriye rezervasyon yapar |
+| Üyelere özel akşamlar | Panel → **Etkinlikler**: oluştur, yayınla, kayıtları gör, iptal et (kayıtlı üyelere e-posta). Kapasite masa kapasitesinden bağımsızdır; formdaki seçenekle o gün salon/özel oda normal rezervasyona kapatılabilir. Yer ayırtmak için profilde ad + telefon gerekir |
+| Doğum günü | Profilde gün/ay (yıl yok). Doğum gününe ±7 gün içindeki rezervasyonda panelde 🎂 rozeti |
+| Bülten izni | Ayrı, işaretsiz açık rıza kutusu; onay ve geri alma tarihleri saklanır. Panel → **Üyeler** → "Bülten listesini indir (CSV)". Gönderim altyapısı yok — listeyi İYS'ye kayıtlı bir araçla kullanın |
+| Hesap silme | Hesap sayfasında; profil, damga, ödül ve etkinlik kayıtları silinir, yaklaşan rezervasyonlar kalır. 24 ay giriş yapılmayan hesaplar otomatik silinir (cron `kumo-inactive-members`) |
+
+Ayarlar (panel → **Ayarlar → Üyelik**): üye ileri tarih günü, ödül için damga sayısı, ödül metni TR/EN.
+
+### Kurulum: sizin yapmanız gerekenler
+
+1. **Google ile giriş**
+   - [Google Cloud Console](https://console.cloud.google.com/) → APIs & Services → **OAuth consent screen** (External, uygulama adı "Kumo Izakaya", destek e-postası) → **Credentials → Create credentials → OAuth client ID → Web application**.
+   - *Authorized redirect URIs*: `https://qcvcvbugvbpxyimeonuf.supabase.co/auth/v1/callback`
+   - Supabase → **Authentication → Sign In / Providers → Google**: Client ID ve Client Secret'ı girip açın.
+2. **Supabase → Authentication → Sign In / Providers**: "Allow new users to sign up" **açık** olmalı.
+3. **Supabase → Authentication → URL Configuration**: Site URL `https://kumo-izakaya-pi.vercel.app`; Redirect URLs'e `https://kumo-izakaya-pi.vercel.app/hesap.html` ve `http://localhost:8431/hesap.html`.
+4. **E-postaya kodla giriş (alan adı gelince)**: Resend'de alan adını doğrulayın → Supabase → Authentication → **SMTP Settings** (host `smtp.resend.com`, port `465`, kullanıcı `resend`, şifre Resend API key, gönderen `uyelik@alanadiniz`) → **Email Templates → Magic Link** gövdesine `{{ .Token }}` ekleyin (6 haneli kod) → Attack Protection'da CAPTCHA (Turnstile) açın → `js/config.js` içinde `emailOtp: true`. Supabase'in varsayılan e-postası gerçek müşterilere gitmediği için bu adımdan önce yalnızca Google girişi görünür.
+
+Yönetici hesabıyla `hesap.html`'e girilebilir ama yönetici hesabı oradan silinemez.
 
 ## Chatbot ("Kumo Asistan")
 

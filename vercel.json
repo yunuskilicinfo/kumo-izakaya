@@ -1,7 +1,7 @@
 {
   "headers": [
     {
-      "source": "/(admin|iptal)\\.html",
+      "source": "/(admin|iptal|hesap)\\.html",
       "headers": [
         { "key": "X-Robots-Tag", "value": "noindex, nofollow" },
         { "key": "Referrer-Policy", "value": "no-referrer" },
